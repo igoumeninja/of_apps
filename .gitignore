@@ -6,4 +6,3 @@ bin
 *.make
 obj
 *.qbs
-Makefile
