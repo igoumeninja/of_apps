@@ -99,7 +99,7 @@ void liveApp::setup()	{
     //sound
     viewSoundChanels = 1;
     
-    drawWithMouse = 0;
+    drawWithMouse = 1;
     numMouseSketches = 99;
     minMouseElasticity = 0.0;
     maxMouseElasticity = 0.99;
@@ -959,7 +959,7 @@ void liveApp::draw()	{
   if (drawWithMouse)								{
     //cout << padY;
     for( int i=0; i<numMouseSketches; i++ ) {
-      sketch[i].drawMouse(padX, padY, 0, rSketch, gSketch, bSketch, aSketch/3, mouseLines);	
+      sketch[i].drawMouse(mouseX, mouseY, 0, rSketch, gSketch, bSketch, aSketch/3, mouseLines);	
       
     }
     //		for( int i=2000; i<2000 + numMouseSketches; i++ ) {
