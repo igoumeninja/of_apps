@@ -34,7 +34,7 @@ void ofSketch::drawMouse(int xL, int yL, int zL, int redL, int greenL, int blueL
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_LINE_SMOOTH);    
 	if	(lines)	{
-		glBegin(GL_LINE_LOOP); //GL_LINE_LOOP,GL_POINTS, GL_LINE_STRIP  ( http://pyopengl.sourceforge.net/documentation/manual/glBegin.3G.xml )
+		glBegin(GL_POINTS); //GL_LINE_LOOP,GL_POINTS, GL_LINE_STRIP  ( http://pyopengl.sourceforge.net/documentation/manual/glBegin.3G.xml )
 	}	else	{
 		glBegin(GL_POINTS); //GL_LINE_LOOP
 	}

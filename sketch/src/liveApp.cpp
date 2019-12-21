@@ -30,7 +30,7 @@ void liveApp::setup()	{
     
     
     drawWithMouse = 1;
-    numMouseSketches = 1;
+    numMouseSketches = 100;
     minMouseElasticity = 0.0;
     maxMouseElasticity = 0.99;
     minMouseDamping = 0.0;
@@ -68,20 +68,8 @@ void liveApp::update()	{
 }
 
 void liveApp::draw()	{
-
-  for( int i=0; i<100; i++ ) {
-    
-    sketch[i].drawMouse(i, 100+ i, 0, 255,255,255,255, 0);	
-  }		
-  //cout << padY;
   for( int i=0; i<numMouseSketches; i++ ) {
-    sketch[i].drawMouse(ofGetMouseX(), ofGetMouseY(), 0, rSketch, gSketch, bSketch, aSketch/3, mouseLines);	
-
-    Yamp0 = ofMap(ampChan0, ampInLow, ampInHigh, 0, ofGetHeight());
-    Xfreq0 = ofMap(freqChan0, freqInLow, freqInHigh, 0, ofGetWidth());
-    for( int i=1000; i<1000+numSoundSketches; i++ ) {
-      sketch[i].drawSound(ofGetMouseX(), ofGetMouseY(), 0, rSound, gSound, bSound, aSound, soundLines);	
-    }
+    sketch[i].drawMouse(ofGetMouseX(), ofGetMouseY(), 0, 255,255,255,255, 20);
   }
 }
 
