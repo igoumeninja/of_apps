@@ -11,7 +11,7 @@
 
 void liveApp::setup()	{
     ofBackground(0,0,0);
-    ofSetBackgroundAuto(false);
+    ofSetBackgroundAuto(true);
     ofEnableSmoothing();
     ofEnableAlphaBlending(); 
     //glutSetCursor(GLUT_CURSOR_CYCLE);  // change cursor icon (http://pyopengl.sourceforge.net/documentation/manual/glutSetCursor.3GLUT.html)
@@ -19,57 +19,32 @@ void liveApp::setup()	{
     receiver.setup( PORTlisten );
     current_msg_string = 0;
     
-    ofSetWindowTitle("Rhythmanalysis");
     ofSetFrameRate(60); // if vertical sync is off, we can go a bit fast... this caps the framerate at 60fps.
     ofSetVerticalSync(false);
     
     //sketch
-    aSound = 255;
     rSketch = gSketch = bSketch = aSketch = 255;
-    rSound = gSound = bSound = aSound = 255;
-    
     
     drawWithMouse = 1;
-    numMouseSketches = 100;
-    minMouseElasticity = 0.0;
-    maxMouseElasticity = 0.99;
-    minMouseDamping = 0.0;
+    numMouseSketches = 500;
+    minMouseElasticity = 0.1;
+    maxMouseElasticity = 0.8;
+    minMouseDamping = 0.1;
     maxMouseDamping = 0.99;
     
-    numSoundSketches = 1;
-    minSoundElasticity = 0.0;
-    maxSoundElasticity = 0.99;
-    minSoundDamping = 0.0;
-    maxSoundDamping = 0.99;
-    
     mouseLines = 1;
-    soundLines = 1;
-    
-    ampInLow =0.0;
-    ampInHigh = 0.15;
-    freqInLow = 20;
-    freqInHigh = 4000;
-    
-    feedbackView = 0;
-    feedbackSpeedX = 0;
-    feedbackSpeedY = 0;
-    timeLine = 0;
-    viewRotate = 0;				
     
     for (int i = 0; i < MAX_SKETCHES; i++){
-      sketch[i].init(0, ofRandom(minSoundElasticity, maxSoundElasticity), ofRandom(minSoundDamping, maxSoundDamping));	//to 1o stoixeio einai to id 0:
       sketch[i].init(1, ofRandom(minMouseElasticity, maxMouseElasticity), ofRandom(minMouseDamping, maxMouseDamping));	//id:1 => mouse init(int sketchID, float elast, float aposv)
-      
-      sketchPhrase = true;
-      
     }
 }
 void liveApp::update()	{ 
 }
 
 void liveApp::draw()	{
+  
   for( int i=0; i<numMouseSketches; i++ ) {
-    sketch[i].drawMouse(ofGetMouseX(), ofGetMouseY(), 0, 255,255,255,255, 20);
+    sketch[i].drawMouse(ofGetMouseX(), ofGetMouseY(), 0, 255,255,255,155, 1);
   }
 }
 
