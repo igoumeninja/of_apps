@@ -17,8 +17,8 @@ void ofApp::update(){
   line.addVertex(grandChildNode.getGlobalPosition());
   if (line.size() > 100){
     line.getVertices().erase(
-    line.getVertices().begin()
-  );
+                             line.getVertices().begin()
+                             );
   }
 }
 
