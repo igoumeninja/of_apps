@@ -41,6 +41,6 @@ private:
 };
 
 int main() {
-    ofSetupOpenGL(200, 200, OF_WINDOW);
+    ofSetupOpenGL(400, 400, OF_WINDOW);
     ofRunApp(new ofApp());
 }

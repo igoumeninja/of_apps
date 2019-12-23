@@ -21,8 +21,8 @@ public:
     void update() {
       rectX = ofGetMouseX();
       rectY = ofGetMouseY();
-      rectW = 400;
-      rectH = 400;
+      rectW = 40;
+      rectH = 40;
       
       p.x = ofGetMouseX();
         p.y = ofGetMouseY();
@@ -40,6 +40,6 @@ private:
 };
 
 int main() {
-    ofSetupOpenGL(200, 200, OF_WINDOW);
+    ofSetupOpenGL(400, 400, OF_WINDOW);
     ofRunApp(new ofApp());
 }
