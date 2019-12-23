@@ -9,6 +9,10 @@ public:
         ofSetWindowPosition(300, 100);
         ofxSubscribeOsc(9005, "/cursor", p);
         ofxSubscribeOsc(9005, "/fps", fps);
+        ofxSubscribeOsc(9005, "/rect/x", rectX);
+        ofxSubscribeOsc(9005, "/rect/y", rectY);
+        ofxSubscribeOsc(9005, "/rect/w", rectW);
+        ofxSubscribeOsc(9005, "/rect/h", rectH);
         ofEnableSmoothing();
         glPointSize(3);
     }
@@ -25,12 +29,15 @@ public:
        
         
         ofCircle(p, 3);
+        ofDrawRectangle(rectX,rectY,rectW,rectH);
+        
     }
     
 private:
-    ofPoint p;
-    float fps;
-    
+  ofPoint p;
+  float fps;
+  int rectX,rectY,rectW,rectH;
+  ofRectangle myRect;  
 };
 
 int main() {
