@@ -1,12 +1,3 @@
-/*
- 
- Preapering AudioVisual Performance at Lyon-Grenoble
- 
- Aris Bezas 
- Igoumeninja 28-10-2011
- 
-*/
- 
 #include "ofApp.h"
 
 void ofApp::setup()	{
@@ -28,7 +19,6 @@ void ofApp::setup()	{
   gui.loadFromFile("settings.xml");
   bHide = false;
 
-  
   //ofEnableDepthTest();
   baseNode.setPosition(0, 0, 0);
   childNode.setParent(baseNode);
@@ -47,58 +37,30 @@ void ofApp::setup()	{
     
   ofSetFrameRate(60); // if vertical sync is off, we can go a bit fast... this caps the framerate at 60fps.
   ofSetVerticalSync(false);
-  
-  //sketch
-  rSketch = gSketch = bSketch = aSketch = 255;
-    
-  drawWithMouse = 1;
-    minMouseElasticity = 0.5;
-  maxMouseElasticity = 0.8;
-  minMouseDamping = 0.1;
-  maxMouseDamping = 0.69;
-  
-  mouseLines = 1;
-  /*
-  for (int i = 0; i < 100; i++){
-    //sketch[i].init(1, ofRandom(minMouseElasticity, maxMouseElasticity), ofRandom(minMouseDamping, maxMouseDamping));	//id:1 => mouse init(int sketchID, float elast, float aposv)
-    sketch[i].init(1, elasticity, ofRandom(minMouseDamping, maxMouseDamping));	//id:1 => mouse init(int sketchID, float elast, float aposv)
-  }
-  */
-
 }
 void ofApp::update()	{
-  for (int i = 0; i < 100; i++){
-    sketch[i].init(1, ofRandom(elasticityMin, elasticityMax), ofRandom(dampingMin, dampingMax));	//id:1 => mouse init(int sketchID, float elast, float aposv)
-    //sketch[i].init(1, elasticity, ofRandom(minMouseDamping, maxMouseDamping));	//id:1 => mouse init(int sketchID, float elast, float aposv)
+  for (int i = 0; i < 410; i++){
+    sketch[i].init(ofRandom(elasticityMin, elasticityMax), ofRandom(dampingMin, dampingMax));
   }
-
   baseNode.pan(1);
   childNode.tilt(5);
   
-
   line.addVertex(grandChildNode.getGlobalPosition());
   if (line.size() > 100){
-    line.getVertices().erase(
-                             line.getVertices().begin()
-                             );
+    line.getVertices().erase(line.getVertices().begin());
   }
 
 }
 
 void ofApp::draw()	{
-
-    cam.begin();
-  
-  //uncomment these 3 lines to understand how nodes are moving
+  cam.begin();
   //baseNode.draw();
   //childNode.draw();
   grandChildNode.draw();
   //line.draw();
-  
-
-    for( int i=0; i<100; i++ ) {
+    for( int i=0; i<410; i++ ) {
       //sketch[i].drawMouse(ofGetMouseX(), ofGetMouseY(), 0, 255,255,255,155, 1);
-      sketch[i].draw(grandChildNode.getGlobalPosition().x,grandChildNode.getGlobalPosition().y,grandChildNode.getGlobalPosition().z, 255,255,255,155,0);
+      sketch[i].draw(grandChildNode.getGlobalPosition().x,grandChildNode.getGlobalPosition().y,grandChildNode.getGlobalPosition().z, 255,255,255,155,1);
     }
     
     cam.end();
