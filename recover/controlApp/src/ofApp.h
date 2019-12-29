@@ -29,9 +29,11 @@ class ofApp : public ofBaseApp{
   ofParameter<float> dampingMax;
   ofParameter<bool> hideMouse;
   ofParameter<float> rectSize;
+  ofParameter<ofColor> color;
+  
   // Old ones
   ofParameter<float> radius;
-  ofParameter<ofColor> color;
+  
   ofParameter<glm::vec2> center;
   ofParameter<int> circleResolution;
   ofParameter<bool> filled;

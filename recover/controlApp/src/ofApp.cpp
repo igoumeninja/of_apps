@@ -27,6 +27,7 @@ void ofApp::setup() {
   gui.loadFromFile("settings.xml");
   bHide = false;
   
+  //ofxPublishOsc("localhost", 9005, "/color", color);
   ofxPublishOsc("localhost", 9005, "/rectSize", rectSize);
   ofxPublishOsc("localhost", 9005, "/cursor", p);
   ofxPublishOsc("localhost", 9005, "/fps", &ofGetFrameRate);
@@ -53,7 +54,7 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw(){
 
-  ofBackground(255);
+  ofBackground(color);
 
   if( !bHide ){
     gui.draw();
