@@ -23,6 +23,7 @@ class ofApp : public ofBaseApp{
   void gotMessage(ofMessage msg);
 		
  private:
+  float rectSize;
   ofPoint p;
   float fps;
   int rectX, rectY, rectW, rectH;

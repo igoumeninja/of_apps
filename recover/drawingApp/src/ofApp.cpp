@@ -3,6 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
   ofSetWindowPosition(300, 100);
+  ofxSubscribeOsc(9005, "/rectSize", rectSize);
   ofxSubscribeOsc(9005, "/cursor", p);
   ofxSubscribeOsc(9005, "/fps", fps);
   ofxSubscribeOsc(9005, "/rect/x", rectX);
@@ -26,7 +27,7 @@ void ofApp::draw(){
   ofDrawBitmapString(
       "Subscriber fps: " + ofToString(ofGetFrameRate()), 10, 50);
   ofCircle(p, 3);
-  ofDrawRectangle(rectX, rectY, rectW, rectH);
+  ofDrawRectangle(p.x, p.y, rectSize, rectSize);
 }
 
 //--------------------------------------------------------------

@@ -1,8 +1,33 @@
+// Copyright 2019
 #include "ofApp.h"
-
 //--------------------------------------------------------------
-void ofApp::setup(){
+void ofApp::setup() {
   ofSetWindowPosition(100, 100);
+
+  gui.setup("panel");
+  gui.add(rectSize.set("rectSize", 10, 10, 990));
+  gui.add(hideMouse.set("hideMouse", false));
+  gui.add(elasticityMin.set("elasticityMin", 0.01, 0.01, 0.99));
+  gui.add(elasticityMax.set("elasticityMax", 0.01, 0.01, 0.99));
+  gui.add(dampingMin.set("dampingMin", 0.01, 0.01, 0.99));
+  gui.add(dampingMax.set("dampingMax", 0.01, 0.01, 0.99));
+  gui.add(filled.set("bFill", true));
+  gui.add(radius.set("radius", 140, 10, 300));
+  gui.add(center.set("center",
+                     glm::vec2(ofGetWidth()*.5,
+                               ofGetHeight()*.5),
+                     glm::vec2(0, 0),
+                     glm::vec2(ofGetWidth(), ofGetHeight())));
+  gui.add(color.set("color", ofColor(100, 100, 140),
+                    ofColor(0, 0), ofColor(255, 255)));
+  gui.add(circleResolution.set("circleRes", 5, 3, 90));
+  gui.add(ringButton.setup("ring"));
+  gui.add(screenSize.set("screenSize", ""));
+
+  gui.loadFromFile("settings.xml");
+  bHide = false;
+  
+  ofxPublishOsc("localhost", 9005, "/rectSize", rectSize);
   ofxPublishOsc("localhost", 9005, "/cursor", p);
   ofxPublishOsc("localhost", 9005, "/fps", &ofGetFrameRate);
   ofxPublishOsc("localhost", 9005, "/rect/x", rectX);
@@ -14,28 +39,33 @@ void ofApp::setup(){
 }
 
 //--------------------------------------------------------------
-void ofApp::update(){
+void ofApp::update() {
   rectX = ofGetMouseX();
   rectY = ofGetMouseY();
   rectW = 40;
   rectH = 40;
-      
-  p.x = ofGetMouseX();
-  p.y = ofGetMouseY();
-
+  if (hideMouse) {
+    p.x = ofGetMouseX();
+    p.y = ofGetMouseY();
+  }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+
   ofBackground(255);
-  ofSetColor(0);
-  ofDrawBitmapString("move mouse here!", 10, 30);
+
+  if( !bHide ){
+    gui.draw();
+  }
 
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
+  if (key == 'm'){
+    hideMouse = !hideMouse;
+  }
 }
 
 //--------------------------------------------------------------
