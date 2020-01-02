@@ -1,8 +1,8 @@
+// Copyright
 #include "ofApp.h"
-
-//--------------------------------------------------------------
-void ofApp::setup(){
+void ofApp::setup() {
   ofSetWindowPosition(300, 100);
+  ofxSubscribeOsc(9005, "/color", color);
   ofxSubscribeOsc(9005, "/rectSize", rectSize);
   ofxSubscribeOsc(9005, "/cursor", p);
   ofxSubscribeOsc(9005, "/fps", fps);
@@ -13,15 +13,9 @@ void ofApp::setup(){
   ofEnableSmoothing();
   glPointSize(3);
 }
-
-//--------------------------------------------------------------
-void ofApp::update(){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::draw(){
-  ofBackground(0);
+void ofApp::update() {}
+void ofApp::draw() {
+  ofBackground(color);
   ofSetColor(255);
   ofDrawBitmapString("Publisher fps: " + ofToString(fps), 10, 30);
   ofDrawBitmapString(
@@ -29,58 +23,34 @@ void ofApp::draw(){
   ofCircle(p, 3);
   ofDrawRectangle(p.x, p.y, rectSize, rectSize);
 }
-
-//--------------------------------------------------------------
-void ofApp::keyPressed(int key){
+void ofApp::keyPressed(int key) {
 
 }
-
-//--------------------------------------------------------------
-void ofApp::keyReleased(int key){
+void ofApp::keyReleased(int key) {
 
 }
-
-//--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
+void ofApp::mouseMoved(int x, int y ) {
 
 }
-
-//--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
+void ofApp::mouseDragged(int x, int y, int button) {
 
 }
-
-//--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
+void ofApp::mousePressed(int x, int y, int button) {
 
 }
-
-//--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
+void ofApp::mouseReleased(int x, int y, int button) {
 
 }
-
-//--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y){
+void ofApp::mouseEntered(int x, int y) {
 
 }
-
-//--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y){
+void ofApp::mouseExited(int x, int y) {
 
 }
-
-//--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
+void ofApp::windowResized(int w, int h) {
 
 }
-
-//--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
+void ofApp::gotMessage(ofMessage msg) {
 
 }
-
-//--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
-
-}
+void ofApp::dragEvent(ofDragInfo dragInfo) { }

@@ -26,8 +26,8 @@ void ofApp::setup() {
 
   gui.loadFromFile("settings.xml");
   bHide = false;
-  
-  //ofxPublishOsc("localhost", 9005, "/color", color);
+
+  ofxPublishOsc("localhost", 9005, "/color", color);
   ofxPublishOsc("localhost", 9005, "/rectSize", rectSize);
   ofxPublishOsc("localhost", 9005, "/cursor", p);
   ofxPublishOsc("localhost", 9005, "/fps", &ofGetFrameRate);
@@ -52,69 +52,68 @@ void ofApp::update() {
 }
 
 //--------------------------------------------------------------
-void ofApp::draw(){
+void ofApp::draw() {
 
   ofBackground(color);
 
-  if( !bHide ){
+  if( !bHide ) {
     gui.draw();
   }
 
 }
 
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key){
-  if (key == 'm'){
+void ofApp::keyPressed(int key) {
+  if (key == 'm') {
     hideMouse = !hideMouse;
   }
 }
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key){
+void ofApp::keyReleased(int key) {
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseMoved(int x, int y ) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
+void ofApp::mouseDragged(int x, int y, int button) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
+void ofApp::mousePressed(int x, int y, int button) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
+void ofApp::mouseReleased(int x, int y, int button) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
+void ofApp::mouseEntered(int x, int y) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y){
+void ofApp::mouseExited(int x, int y) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y){
+void ofApp::windowResized(int w, int h) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
+void ofApp::gotMessage(ofMessage msg) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
+void ofApp::dragEvent(ofDragInfo dragInfo) { 
 
 }

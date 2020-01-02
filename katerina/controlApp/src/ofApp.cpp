@@ -1,12 +1,12 @@
+// Copyright
 #include "ofMain.h"
 #include "ofxOscPublisher.h"
 
 /* launch this and ofxOscSubscriberExample */
 
 class ofApp : public ofBaseApp {
-public:
+ public:
     void setup() {
-
       ofSetWindowPosition(100, 100);
       ofxPublishOsc("localhost", 9005, "/cursor", p);
       ofxPublishOsc("localhost", 9005, "/fps", &ofGetFrameRate);
