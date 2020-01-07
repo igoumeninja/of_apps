@@ -15,10 +15,11 @@ void ofApp::setup() {
 }
 void ofApp::update() {}
 void ofApp::draw() {
+  of
   ofBackground(color);
   ofSetColor(255);
   ofDrawBitmapString("Publisher fps: " + ofToString(fps), 10, 30);
-  ofDrawBitmapString(
+  ofDrawBitmapString(C
       "Subscriber fps: " + ofToString(ofGetFrameRate()), 10, 50);
   ofCircle(p, 3);
   ofDrawRectangle(p.x, p.y, rectSize, rectSize);

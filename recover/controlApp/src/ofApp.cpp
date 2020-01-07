@@ -1,6 +1,5 @@
 // Copyright 2019
 #include "ofApp.h"
-//--------------------------------------------------------------
 void ofApp::setup() {
   ofSetWindowPosition(100, 100);
 
@@ -38,8 +37,6 @@ void ofApp::setup() {
   ofEnableSmoothing();
   glPointSize(3);
 }
-
-//--------------------------------------------------------------
 void ofApp::update() {
   rectX = ofGetMouseX();
   rectY = ofGetMouseY();
@@ -50,8 +47,6 @@ void ofApp::update() {
     p.y = ofGetMouseY();
   }
 }
-
-//--------------------------------------------------------------
 void ofApp::draw() {
 
   ofBackground(color);
@@ -61,59 +56,34 @@ void ofApp::draw() {
   }
 
 }
-
-//--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
   if (key == 'm') {
     hideMouse = !hideMouse;
   }
 }
-
-//--------------------------------------------------------------
-void ofApp::keyReleased(int key) {
-}
-
-//--------------------------------------------------------------
+void ofApp::keyReleased(int key) {}
 void ofApp::mouseMoved(int x, int y ) {
 
 }
-
-//--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
 
 }
-
-//--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
 
 }
-
-//--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
 
 }
-
-//--------------------------------------------------------------
 void ofApp::mouseEntered(int x, int y) {
 
 }
-
-//--------------------------------------------------------------
 void ofApp::mouseExited(int x, int y) {
 
 }
-
-//--------------------------------------------------------------
 void ofApp::windowResized(int w, int h) {
 
 }
-
-//--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg) {
 
 }
-
-//--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo) { 
-
-}
+void ofApp::dragEvent(ofDragInfo dragInfo) {}
