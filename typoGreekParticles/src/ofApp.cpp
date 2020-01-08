@@ -67,34 +67,34 @@ void ofApp::draw(){
 }
 
 void ofApp::updateDrawMode(){
-	drawMode = ++drawMode % 4; // move through 4 drawing modes (0, 1, 2, 3)
-	//ofBackground(bg_color); // clear the screen when changing drawing mode
-	if(drawMode == 2){
-		ofSetColor(255);
-		//fbo.draw(0, 0); // draw text to the screen for drawMode 2
-	}
-	bResetParticles = true;
-	bUpdateDrawMode = false;
+  drawMode = ++drawMode % 4; // move through 4 drawing modes (0, 1, 2, 3)
+  //ofBackground(bg_color); // clear the screen when changing drawing mode
+  if(drawMode == 2){
+    ofSetColor(255);
+    //fbo.draw(0, 0); // draw text to the screen for drawMode 2
+  }
+  bResetParticles = true;
+  bUpdateDrawMode = false;
 }
 
 //--------------------------------------------------------------
 void ofApp::resetParticles(){
-	// clear existing particles
-	for(int i = 0; i < particles.size(); i++){
-		delete particles[i];
-		particles[i] = NULL;
-	}
-	particles.clear();
-	// create new particles
-	if(particles.size() < maxParticles){
-		int difference = maxParticles - particles.size();
-		for(int i = 0; i < difference; i++){
-			Particle * p = new Particle();
-			p->setup(&pix, fbo_color, drawMode);
-			particles.push_back(p);
-		}
-	}
-	bResetParticles = false;
+  // clear existing particles
+  for(int i = 0; i < particles.size(); i++){
+    delete particles[i];
+    particles[i] = NULL;
+  }
+  particles.clear();
+  // create new particles
+  if(particles.size() < maxParticles){
+    int difference = maxParticles - particles.size();
+    for(int i = 0; i < difference; i++){
+      Particle * p = new Particle();
+      p->setup(&pix, fbo_color, drawMode);
+      particles.push_back(p);
+    }
+  }
+  bResetParticles = false;
 }
 
 //--------------------------------------------------------------
