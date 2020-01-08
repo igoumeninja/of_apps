@@ -79,7 +79,7 @@ void ofApp::update()	{
   line.addVertex(grandChildNode.getGlobalPosition());
   if (line.size() > 100){
     line.getVertices().erase(
-                             line.getVertices().begin()
+        line.getVertices().begin()
                              );
   }
 
@@ -87,7 +87,7 @@ void ofApp::update()	{
 
 void ofApp::draw()	{
 
-    cam.begin();
+  cam.begin();
   
   //uncomment these 3 lines to understand how nodes are moving
   //baseNode.draw();
@@ -96,12 +96,12 @@ void ofApp::draw()	{
   //line.draw();
   
 
-    for( int i=0; i<100; i++ ) {
-      //sketch[i].drawMouse(ofGetMouseX(), ofGetMouseY(), 0, 255,255,255,155, 1);
-      sketch[i].drawMouse3D(grandChildNode.getGlobalPosition().x,grandChildNode.getGlobalPosition().y,grandChildNode.getGlobalPosition().z, 255,255,255,155,1);
-    }
+  for( int i=0; i<100; i++ ) {
+    //sketch[i].drawMouse(ofGetMouseX(), ofGetMouseY(), 0, 255,255,255,155, 1);
+    sketch[i].drawMouse3D(grandChildNode.getGlobalPosition().x,grandChildNode.getGlobalPosition().y,grandChildNode.getGlobalPosition().z, 255,255,255,155,1);
+  }
     
-    cam.end();
+  cam.end();
 
     if( !bHide ){
       gui.draw();

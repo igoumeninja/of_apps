@@ -3,6 +3,8 @@
 #include "ofMain.h"
 #include "ofxOscSubscriber.h"
 #include "Particle.h"
+#include "ofSketch.h"
+#include <vector>
 
 class ofApp : public ofBaseApp{
 
@@ -26,6 +28,20 @@ class ofApp : public ofBaseApp{
   void updateDrawMode();
   void resetParticles();
 
+  // sketch
+  ofSketch sketch[2048];
+  float elasticityMin;
+  float elasticityMax;
+  float dampingMin;
+  float dampingMax;
+
+  ofNode baseNode;
+  ofNode childNode;
+  ofNode grandChildNode;
+  ofPolyline line;
+  ofEasyCam cam;
+  
+  // typo particles
   int maxParticles;
   int drawMode;
   

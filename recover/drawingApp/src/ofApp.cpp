@@ -1,9 +1,20 @@
 // Copyright
 #include "ofApp.h"
 void ofApp::setup() {
+  ofBackground(0,0,0);
   ofSetWindowPosition(300, 100);
   ofEnableSmoothing();
+  ofSetBackgroundAuto(true);
+  ofEnableAlphaBlending();
+  ofSetFrameRate(60); // if vertical sync is off, we can go faster
+  ofSetVerticalSync(false);
+  //ofEnableDepthTest();
   {
+    ofxSubscribeOsc(9005, "/color", color);
+    ofxSubscribeOsc(9005, "/elasticityMin", elasticityMin);
+    ofxSubscribeOsc(9005, "/elasticityMax", elasticityMax);
+    ofxSubscribeOsc(9005, "/dampingMin", dampingMin);
+    ofxSubscribeOsc(9005, "/dampingMax", dampingMax);
     ofxSubscribeOsc(9005, "/color", color);
     ofxSubscribeOsc(9005, "/rectSize", rectSize);
     ofxSubscribeOsc(9005, "/cursor", p);
@@ -54,10 +65,38 @@ void ofApp::setup() {
     fbo.readToPixels(pix); // the ofPixels class has a convenient getColor() method
 
   } // typography Particles
-  
+
+  {
+    
+    baseNode.setPosition(0, 0, 0);
+    childNode.setParent(baseNode);
+    childNode.setPosition(0, 0, 200);
+    grandChildNode.setParent(childNode);
+    grandChildNode.setPosition(0,50,0);
+
+
+  } // sketch
   glPointSize(3);
 }
 void ofApp::update() {
+  {
+    for (int i = 0; i < 100; i++){
+      sketch[i].init(1, ofRandom(elasticityMin, elasticityMax), ofRandom(dampingMin, dampingMax));	//id:1 => mouse init(int sketchID, float elast, float aposv)
+      //sketch[i].init(1, elasticity, ofRandom(minMouseDamping, maxMouseDamping));	//id:1 => mouse init(int sketchID, float elast, float aposv)
+    }
+
+    baseNode.pan(1);
+    childNode.tilt(5);
+  
+
+    line.addVertex(grandChildNode.getGlobalPosition());
+    if (line.size() > 100){
+      line.getVertices().erase(
+          line.getVertices().begin()
+                               );
+    }
+
+  } // sketch
   if(bUpdateDrawMode){
     updateDrawMode();
   }
@@ -69,17 +108,39 @@ void ofApp::update() {
   }
   ofSetWindowTitle("drawMode: " + ofToString(drawMode) + " | numParticles: " + ofToString(particles.size()) + " | fps: " + ofToString(ofGetFrameRate(), 0));
 }
-void ofApp::draw() { 
+void ofApp::draw() {
+
+  {
+    cam.begin();
+  
+    //uncomment these 3 lines to understand how nodes are moving
+    //baseNode.draw();
+    //childNode.draw();
+    grandChildNode.draw();
+    //line.draw();
+  
+
+    for( int i=0; i<100; i++ ) {
+      //sketch[i].drawMouse(ofGetMouseX(), ofGetMouseY(), 0, 255,255,255,155, 1);
+      sketch[i].drawMouse3D(grandChildNode.getGlobalPosition().x,grandChildNode.getGlobalPosition().y,grandChildNode.getGlobalPosition().z, 255,255,255,155,1);
+    }
+    
+    cam.end();
+
+  } //sketch
+  
   ofSetColor(color);
   ofFill();
   ofDrawRectangle(0,0,ofGetWidth(), ofGetHeight());
   // ofBackground(color);
+  /*
   ofSetColor(255);
   //ofDrawBitmapString("Publisher fps: " + ofToString(fps), 10, 30);
   ofDrawRectangle(p.x, p.y, rectSize, rectSize);
   for(int i = 0; i < particles.size(); i++){
     particles[i]->display();
   }
+  */
 }
 
 void ofApp::updateDrawMode(){

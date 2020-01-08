@@ -27,6 +27,12 @@ void ofApp::setup() {
   bHide = false;
 
   ofxPublishOsc("localhost", 9005, "/color", color);
+  ofxPublishOsc("localhost", 9005, "/elasticityMin", elasticityMin);
+  ofxPublishOsc("localhost", 9005, "/elasticityMax", elasticityMax);
+  ofxPublishOsc("localhost", 9005, "/dampingMin", dampingMin);
+  ofxPublishOsc("localhost", 9005, "/dampingMax", dampingMax);
+
+  
   ofxPublishOsc("localhost", 9005, "/rectSize", rectSize);
   ofxPublishOsc("localhost", 9005, "/cursor", p);
   ofxPublishOsc("localhost", 9005, "/fps", &ofGetFrameRate);

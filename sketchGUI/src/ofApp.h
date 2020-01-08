@@ -75,7 +75,7 @@ public:
 	//  OBJECTS
   //	ofxVec2f				p;
 	ofxOscSender			osc_sender;
-	ofSketch				sketch[MAX_SKETCHES];
+  ofSketch				sketch[MAX_SKETCHES];
 	
 	//==================
 	//	EFFECTS
