@@ -47,6 +47,7 @@ void ofApp::update() {
     p.y = ofGetMouseY();
   }
 }
+
 void ofApp::draw() {
 
   ofBackground(color);

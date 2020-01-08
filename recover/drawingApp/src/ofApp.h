@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxOscSubscriber.h"
+#include "Particle.h"
 
 class ofApp : public ofBaseApp{
 
@@ -21,6 +22,23 @@ class ofApp : public ofBaseApp{
   void windowResized(int w, int h);
   void dragEvent(ofDragInfo dragInfo);
   void gotMessage(ofMessage msg);
+
+  void updateDrawMode();
+  void resetParticles();
+
+  int maxParticles;
+  int drawMode;
+  
+  ofColor bg_color;
+  ofColor fbo_color;
+
+  bool bUpdateDrawMode;
+  bool bResetParticles;
+
+  ofFbo fbo;
+  ofPixels pix;
+
+  vector <Particle *> particles;
 		
  private:
   ofColor color;

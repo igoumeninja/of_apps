@@ -41,6 +41,7 @@ class ofApp : public ofBaseApp{
   ofParameter<string> screenSize;
   ofxPanel gui;
   bool bHide;
+  
  private:
   ofPoint p;
   int rectX, rectY, rectW, rectH;		

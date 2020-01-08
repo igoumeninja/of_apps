@@ -2,6 +2,8 @@
 #include "ofApp.h"
 void ofApp::setup() {
   ofSetWindowPosition(300, 100);
+  ofEnableSmoothing();
+  {
   ofxSubscribeOsc(9005, "/color", color);
   ofxSubscribeOsc(9005, "/rectSize", rectSize);
   ofxSubscribeOsc(9005, "/cursor", p);
@@ -10,18 +12,22 @@ void ofApp::setup() {
   ofxSubscribeOsc(9005, "/rect/y", rectY);
   ofxSubscribeOsc(9005, "/rect/w", rectW);
   ofxSubscribeOsc(9005, "/rect/h", rectH);
-  ofEnableSmoothing();
+  } // OSC receivers
+  {
+    string fontpath = "arial.ttf";
+    ofTrueTypeFontSettings settings(fontpath, 250);
+
+    settings.antialiased = true;
+    settings.addRanges(ofAlphabet::Greek);
+  } // typography
+  
   glPointSize(3);
 }
 void ofApp::update() {}
 void ofApp::draw() {
-  of
   ofBackground(color);
   ofSetColor(255);
   ofDrawBitmapString("Publisher fps: " + ofToString(fps), 10, 30);
-  ofDrawBitmapString(C
-      "Subscriber fps: " + ofToString(ofGetFrameRate()), 10, 50);
-  ofCircle(p, 3);
   ofDrawRectangle(p.x, p.y, rectSize, rectSize);
 }
 void ofApp::keyPressed(int key) {
