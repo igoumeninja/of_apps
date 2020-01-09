@@ -29,7 +29,8 @@ void ofApp::setup() {
   
   bg_color = ofColor(255);
   fbo_color = ofColor(0);
-  
+
+  hideSketch = true;
   bUpdateDrawMode = false;
   bResetParticles = true;
   
@@ -67,7 +68,7 @@ void ofApp::setup() {
   glPointSize(3);
 }
 void ofApp::update() {
-  {
+  if (hideSketch) {
     for (int i = 0; i < 100; i++) {
       sketch[i].init(1, ofRandom(elasticityMin, elasticityMax), ofRandom (dampingMin, dampingMax));
     }
