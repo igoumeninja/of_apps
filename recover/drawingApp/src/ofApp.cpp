@@ -94,7 +94,7 @@ void ofApp::update() {
 }
 void ofApp::draw() {
 
-  {
+  if (hideSketch) {
     cam.begin();
   
     //uncomment these 3 lines to understand how nodes are moving
@@ -117,14 +117,14 @@ void ofApp::draw() {
   ofFill();
   ofDrawRectangle(0,0,ofGetWidth(), ofGetHeight());
   // ofBackground(color);
-  /*
+  if (hideTypo) {
     ofSetColor(255);
     //ofDrawBitmapString("Publisher fps: " + ofToString(fps), 10, 30);
     ofDrawRectangle(p.x, p.y, rectSize, rectSize);
     for(int i = 0; i < particles.size(); i++){
     particles[i]->display();
     }
-  */
+  }
 }
 
 void ofApp::updateDrawMode(){
