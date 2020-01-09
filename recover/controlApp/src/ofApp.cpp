@@ -1,7 +1,7 @@
 // Copyright 2019 by Aris Bezas
 #include "ofApp.h"
 void ofApp::setup() {
-  ofSetWindowPosition(100, 100);
+  ofSetWindowPosition(1700, 0);
   ofEnableSmoothing();
   glPointSize(3);
 
