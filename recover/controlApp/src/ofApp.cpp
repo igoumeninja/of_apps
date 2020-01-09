@@ -3,10 +3,9 @@
 void ofApp::setup() {
   ofSetWindowPosition(1700, 0);
   ofEnableSmoothing();
-  glPointSize(3);
+  //  glPointSize(3);
 
   gui.setup("panel");
-  gui.add(rectSize.set("rectSize", 10, 10, 990));
   gui.add(hideSketch.set("Sketch", false));
   gui.add(hideTypo.set("Typo", false));
   gui.add(elasticityMin.set("elasticityMin", 0.01, 0.01, 0.99));
