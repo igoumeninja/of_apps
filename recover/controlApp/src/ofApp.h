@@ -23,11 +23,13 @@ class ofApp : public ofBaseApp{
   void dragEvent(ofDragInfo dragInfo);
   void gotMessage(ofMessage msg);
 
+  ofParameter<bool> hideMouse;
+  ofParameter<bool> hideSketch;
+  ofParameter<bool> hideTypo;
   ofParameter<float> elasticityMin;
   ofParameter<float> elasticityMax;
   ofParameter<float> dampingMin;
   ofParameter<float> dampingMax;
-  ofParameter<bool> hideMouse;
   ofParameter<float> rectSize;
   ofParameter<ofColor> color;
   

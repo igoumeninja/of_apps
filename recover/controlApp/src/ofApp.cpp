@@ -6,6 +6,8 @@ void ofApp::setup() {
   gui.setup("panel");
   gui.add(rectSize.set("rectSize", 10, 10, 990));
   gui.add(hideMouse.set("hideMouse", false));
+  gui.add(hideSketch.set("hideSketch", false));
+  gui.add(hideTypo.set("hideTypo", false));
   gui.add(elasticityMin.set("elasticityMin", 0.01, 0.01, 0.99));
   gui.add(elasticityMax.set("elasticityMax", 0.01, 0.01, 0.99));
   gui.add(dampingMin.set("dampingMin", 0.01, 0.01, 0.99));
@@ -27,6 +29,8 @@ void ofApp::setup() {
   bHide = false;
 
   ofxPublishOsc("localhost", 9005, "/color", color);
+  ofxPublishOsc("localhost", 9005, "/hideSketch", hideSketch);
+  ofxPublishOsc("localhost", 9005, "/hideTypo", hideTypo);
   ofxPublishOsc("localhost", 9005, "/elasticityMin", elasticityMin);
   ofxPublishOsc("localhost", 9005, "/elasticityMax", elasticityMax);
   ofxPublishOsc("localhost", 9005, "/dampingMin", dampingMin);
@@ -44,10 +48,6 @@ void ofApp::setup() {
   glPointSize(3);
 }
 void ofApp::update() {
-  rectX = ofGetMouseX();
-  rectY = ofGetMouseY();
-  rectW = 40;
-  rectH = 40;
   if (hideMouse) {
     p.x = ofGetMouseX();
     p.y = ofGetMouseY();
