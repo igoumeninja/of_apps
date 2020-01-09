@@ -9,6 +9,8 @@ void ofApp::setup() {
   ofSetFrameRate(60);  // if vertical sync is off, we can go faster
   ofSetVerticalSync(false);
   //  ofEnableDepthTest();
+  ofxSubscribeOsc(9005, "/hideSketch", hideSketch);
+  ofxSubscribeOsc(9005, "/hideTypo", hideTypo);
   ofxSubscribeOsc(9005, "/color", color);
   ofxSubscribeOsc(9005, "/elasticityMin", elasticityMin);
   ofxSubscribeOsc(9005, "/elasticityMax", elasticityMax);

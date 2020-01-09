@@ -28,6 +28,7 @@ class ofApp : public ofBaseApp{
   void updateDrawMode();
   void resetParticles();
 
+  bool hideSketch, hideTypo;
   // sketch
   ofSketch sketch[2048];
   float elasticityMin;
