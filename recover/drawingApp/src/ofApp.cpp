@@ -1,99 +1,80 @@
 // Copyright
 #include "ofApp.h"
 void ofApp::setup() {
-  ofBackground(0,0,0);
+  ofBackground(0, 0, 0);
   ofSetWindowPosition(300, 100);
   ofEnableSmoothing();
   ofSetBackgroundAuto(true);
   ofEnableAlphaBlending();
-  ofSetFrameRate(60); // if vertical sync is off, we can go faster
+  ofSetFrameRate(60);  // if vertical sync is off, we can go faster
   ofSetVerticalSync(false);
-  //ofEnableDepthTest();
-  {
-    ofxSubscribeOsc(9005, "/color", color);
-    ofxSubscribeOsc(9005, "/elasticityMin", elasticityMin);
-    ofxSubscribeOsc(9005, "/elasticityMax", elasticityMax);
-    ofxSubscribeOsc(9005, "/dampingMin", dampingMin);
-    ofxSubscribeOsc(9005, "/dampingMax", dampingMax);
-    ofxSubscribeOsc(9005, "/color", color);
-    ofxSubscribeOsc(9005, "/rectSize", rectSize);
-    ofxSubscribeOsc(9005, "/cursor", p);
-    ofxSubscribeOsc(9005, "/fps", fps);
-    ofxSubscribeOsc(9005, "/rect/x", rectX);
-    ofxSubscribeOsc(9005, "/rect/y", rectY);
-    ofxSubscribeOsc(9005, "/rect/w", rectW);
-    ofxSubscribeOsc(9005, "/rect/h", rectH);
-  } // OSC receivers
-  {
-    string fontpath = "arial.ttf";
-    ofTrueTypeFontSettings settings(fontpath, 250);
+  //  ofEnableDepthTest();
+  ofxSubscribeOsc(9005, "/color", color);
+  ofxSubscribeOsc(9005, "/elasticityMin", elasticityMin);
+  ofxSubscribeOsc(9005, "/elasticityMax", elasticityMax);
+  ofxSubscribeOsc(9005, "/dampingMin", dampingMin);
+  ofxSubscribeOsc(9005, "/dampingMax", dampingMax);
+  ofxSubscribeOsc(9005, "/color", color);
+  ofxSubscribeOsc(9005, "/cursor", p);
+  string fontpath = "arial.ttf";
+  ofTrueTypeFontSettings settings(fontpath, 250);
 
-    settings.antialiased = true;
-    settings.addRanges(ofAlphabet::Greek);
+  settings.antialiased = true;
+  settings.addRanges(ofAlphabet::Greek);
 
-    maxParticles = 200; // the maximum number of active particles
-    drawMode = 1; // move through the drawing modes by clicking the mouse
+  maxParticles = 200;  // the maximum number of active particles
+  drawMode = 1;  // move through the drawing modes by clicking the mouse
   
-    bg_color = ofColor(255);
-    fbo_color = ofColor(0);
+  bg_color = ofColor(255);
+  fbo_color = ofColor(0);
   
-    bUpdateDrawMode = false;
-    bResetParticles = true;
+  bUpdateDrawMode = false;
+  bResetParticles = true;
   
-    ofBackground(bg_color);
-    ofSetBackgroundAuto(false);
-    ofEnableAntiAliasing();
-    ofSetFrameRate(60);
+  ofBackground(bg_color);
+  ofSetBackgroundAuto(false);
+  ofEnableAntiAliasing();
+  ofSetFrameRate(60);
   
-    ofTrueTypeFont ttf;
-    ttf.loadFont("arial.ttf", 250);
-    ttf.load(settings);
-    string s = "επιθυμίες";
+  ofTrueTypeFont ttf;
+  ttf.loadFont("arial.ttf", 250);
+  ttf.load(settings);
+  string s = "επιθυμίες";
 
-    fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
-    pix.allocate(ofGetWidth(), ofGetHeight(), OF_PIXELS_RGBA);
-    fbo.begin();
-    ofClear(0, 0, 0, 0);
-    // Center string code from:
-    // https://github.com/armadillu/ofxCenteredTrueTypeFont/blob/master/src/ofxCenteredTrueTypeFont.h
-    ofRectangle r = ttf.getStringBoundingBox(s, 0, 0);
-    ofVec2f offset = ofVec2f(floor(-r.x - r.width * 0.5f), floor(-r.y - r.height * 0.5f));
-    ofSetColor(fbo_color);
-    ttf.drawString(s, fbo.getWidth() / 2 + offset.x, fbo.getHeight() / 2 + offset.y);
-    fbo.end();
+  fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
+  pix.allocate(ofGetWidth(), ofGetHeight(), OF_PIXELS_RGBA);
+  fbo.begin();
+  ofClear(0, 0, 0, 0);
+  // Center string code from:
+  // https://github.com/armadillu/ofxCenteredTrueTypeFont/blob/master/src/ofxCenteredTrueTypeFont.h
+  ofRectangle r = ttf.getStringBoundingBox(s, 0, 0);
+  ofVec2f offset = ofVec2f(floor(-r.x - r.width * 0.5f), floor(-r.y - r.height * 0.5f));
+  ofSetColor(fbo_color);
+  ttf.drawString(s, fbo.getWidth() / 2 + offset.x, fbo.getHeight() / 2 + offset.y);
+  fbo.end();
   
-    fbo.readToPixels(pix); // the ofPixels class has a convenient getColor() method
-
-  } // typography Particles
-
-  {
+  fbo.readToPixels(pix); // the ofPixels class has a convenient getColor() method
     
-    baseNode.setPosition(0, 0, 0);
-    childNode.setParent(baseNode);
-    childNode.setPosition(0, 0, 200);
-    grandChildNode.setParent(childNode);
-    grandChildNode.setPosition(0,50,0);
+  baseNode.setPosition(0, 0, 0);
+  childNode.setParent(baseNode);
+  childNode.setPosition(0, 0, 200);
+  grandChildNode.setParent(childNode);
+  grandChildNode.setPosition(0,50,0);
 
 
-  } // sketch
   glPointSize(3);
 }
 void ofApp::update() {
   {
-    for (int i = 0; i < 100; i++){
-      sketch[i].init(1, ofRandom(elasticityMin, elasticityMax), ofRandom(dampingMin, dampingMax));	//id:1 => mouse init(int sketchID, float elast, float aposv)
-      //sketch[i].init(1, elasticity, ofRandom(minMouseDamping, maxMouseDamping));	//id:1 => mouse init(int sketchID, float elast, float aposv)
+    for (int i = 0; i < 100; i++) {
+      sketch[i].init(1, ofRandom(elasticityMin, elasticityMax), ofRandom (dampingMin, dampingMax));
     }
 
     baseNode.pan(1);
     childNode.tilt(5);
-  
-
     line.addVertex(grandChildNode.getGlobalPosition());
-    if (line.size() > 100){
-      line.getVertices().erase(
-          line.getVertices().begin()
-                               );
+    if (line.size() > 100) {
+      line.getVertices().erase( line.getVertices().begin());
     }
 
   } // sketch
@@ -134,12 +115,12 @@ void ofApp::draw() {
   ofDrawRectangle(0,0,ofGetWidth(), ofGetHeight());
   // ofBackground(color);
   /*
-  ofSetColor(255);
-  //ofDrawBitmapString("Publisher fps: " + ofToString(fps), 10, 30);
-  ofDrawRectangle(p.x, p.y, rectSize, rectSize);
-  for(int i = 0; i < particles.size(); i++){
+    ofSetColor(255);
+    //ofDrawBitmapString("Publisher fps: " + ofToString(fps), 10, 30);
+    ofDrawRectangle(p.x, p.y, rectSize, rectSize);
+    for(int i = 0; i < particles.size(); i++){
     particles[i]->display();
-  }
+    }
   */
 }
 
