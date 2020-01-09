@@ -23,12 +23,12 @@ class ofApp : public ofBaseApp{
   void mouseExited(int x, int y);
   void windowResized(int w, int h);
   void dragEvent(ofDragInfo dragInfo);
-  void gotMessage(ofMessage msg);cr
+  void gotMessage(ofMessage msg);
 
   void updateDrawMode();
   void resetParticles();
 
-  bool hideSketch, hideTypo, hideTypoOld;
+  bool hideSketch, hideSketchOld, hideTypo, hideTypoOld;
   // sketch
   ofSketch sketch[2048];
   float elasticityMin;

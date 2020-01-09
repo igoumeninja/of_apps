@@ -66,6 +66,10 @@ void ofApp::setup() {
   grandChildNode.setPosition(0, 50, 0);
 }
 void ofApp::update() {
+  if (hideSketch != hideSketchOld) {
+    color = ofColor(0, 0, 0, 5);
+    hideSketchOld = hideSketch;
+  }
   if (hideSketch) {
     for (int i = 0; i < 100; i++) {
       sketch[i].init(1, ofRandom(elasticityMin, elasticityMax), ofRandom (dampingMin, dampingMax));
@@ -77,13 +81,12 @@ void ofApp::update() {
     if (line.size() > 100) {
       line.getVertices().erase( line.getVertices().begin());
     }
-
   }  // sketch
+  if (hideTypo != hideTypoOld) {
+    color = ofColor(255, 255, 255, 5);
+    hideTypoOld = hideTypo;
+  }
   if (hideTypo) {
-    if (hideTypo != hideTypoOld) {
-      color = ofColor(255,255,255,5);
-      hideTypoOld = hideTypo;
-    }
     if(bUpdateDrawMode){
       updateDrawMode();
     }
