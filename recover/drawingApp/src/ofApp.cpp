@@ -2,7 +2,7 @@
 #include "ofApp.h"
 void ofApp::setup() {
   ofBackground(0, 0, 0);
-  ofSetWindowPosition(300, 100);
+  ofSetWindowPosition(0, 0);
   ofEnableSmoothing();
   ofSetBackgroundAuto(true);
   ofEnableAlphaBlending();
@@ -31,7 +31,7 @@ void ofApp::setup() {
   bg_color = ofColor(255);
   fbo_color = ofColor(0);
 
-  hideSketch = true;
+  hideSketch = false;
   bUpdateDrawMode = false;
   bResetParticles = true;
 
@@ -79,19 +79,26 @@ void ofApp::update() {
     }
 
   }  // sketch
-  if(bUpdateDrawMode){
-    updateDrawMode();
+  if (hideTypo) {
+    if (hideTypo != hideTypoOld) {
+      color = ofColor(255,255,255,5);
+      hideTypoOld = hideTypo;
+    }
+    if(bUpdateDrawMode){
+      updateDrawMode();
+    }
+    if(bResetParticles){
+      resetParticles();
+    }
+    for(int i = 0; i < particles.size(); i++){
+      particles[i]->update();
+    }
   }
-  if(bResetParticles){
-    resetParticles();
-  }
-  for(int i = 0; i < particles.size(); i++){
-    particles[i]->update();
-  }
-  ofSetWindowTitle("drawMode: " + ofToString(drawMode) + " | numParticles: " + ofToString(particles.size()) + " | fps: " + ofToString(ofGetFrameRate(), 0));
 }
 void ofApp::draw() {
-
+  ofSetColor(color);
+  ofFill();
+  ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
   if (hideSketch) {
     cam.begin();
     //  uncomment these 3 lines to understand how nodes are moving
@@ -104,10 +111,6 @@ void ofApp::draw() {
     }
     cam.end();
   }  // sketch
-
-  ofSetColor(color);
-  ofFill();
-  ofDrawRectangle(0,0,ofGetWidth(), ofGetHeight());
   if (hideTypo) {
     ofSetColor(255);
     for (int i = 0; i < particles.size(); i++) {
