@@ -1,4 +1,4 @@
-// Copyright
+// Copyright 2019 Aris Bezas
 #include "ofApp.h"
 void ofApp::setup() {
   ofBackground(0, 0, 0);
@@ -8,6 +8,7 @@ void ofApp::setup() {
   ofEnableAlphaBlending();
   ofSetFrameRate(60);  // if vertical sync is off, we can go faster
   ofSetVerticalSync(false);
+  glPointSize(1);
   //  ofEnableDepthTest();
   ofxSubscribeOsc(9005, "/hideSketch", hideSketch);
   ofxSubscribeOsc(9005, "/hideTypo", hideTypo);
@@ -26,19 +27,19 @@ void ofApp::setup() {
 
   maxParticles = 200;  // the maximum number of active particles
   drawMode = 1;  // move through the drawing modes by clicking the mouse
-  
+
   bg_color = ofColor(255);
   fbo_color = ofColor(0);
 
   hideSketch = true;
   bUpdateDrawMode = false;
   bResetParticles = true;
-  
+
   ofBackground(bg_color);
   ofSetBackgroundAuto(false);
   ofEnableAntiAliasing();
   ofSetFrameRate(60);
-  
+
   ofTrueTypeFont ttf;
   ttf.loadFont("arial.ttf", 250);
   ttf.load(settings);
@@ -55,17 +56,14 @@ void ofApp::setup() {
   ofSetColor(fbo_color);
   ttf.drawString(s, fbo.getWidth() / 2 + offset.x, fbo.getHeight() / 2 + offset.y);
   fbo.end();
-  
+
   fbo.readToPixels(pix); // the ofPixels class has a convenient getColor() method
-    
+
   baseNode.setPosition(0, 0, 0);
   childNode.setParent(baseNode);
   childNode.setPosition(0, 0, 200);
   grandChildNode.setParent(childNode);
-  grandChildNode.setPosition(0,50,0);
-
-
-  glPointSize(3);
+  grandChildNode.setPosition(0, 50, 0);
 }
 void ofApp::update() {
   if (hideSketch) {
@@ -80,7 +78,7 @@ void ofApp::update() {
       line.getVertices().erase( line.getVertices().begin());
     }
 
-  } // sketch
+  }  // sketch
   if(bUpdateDrawMode){
     updateDrawMode();
   }
@@ -96,38 +94,28 @@ void ofApp::draw() {
 
   if (hideSketch) {
     cam.begin();
-  
-    //uncomment these 3 lines to understand how nodes are moving
-    //baseNode.draw();
-    //childNode.draw();
-    grandChildNode.draw();
-    //line.draw();
-  
-
-    for( int i=0; i<100; i++ ) {
-      //sketch[i].drawMouse(ofGetMouseX(), ofGetMouseY(), 0, 255,255,255,155, 1);
+    //  uncomment these 3 lines to understand how nodes are moving
+    //  baseNode.draw();
+    //  childNode.draw();
+    //  grandChildNode.draw();
+    //  line.draw();
+    for (int i=0; i < 100; i++) {
       sketch[i].drawMouse3D(grandChildNode.getGlobalPosition().x,grandChildNode.getGlobalPosition().y,grandChildNode.getGlobalPosition().z, 255,255,255,155,1);
     }
-    
     cam.end();
+  }  // sketch
 
-  } //sketch
-  
   ofSetColor(color);
   ofFill();
   ofDrawRectangle(0,0,ofGetWidth(), ofGetHeight());
-  // ofBackground(color);
   if (hideTypo) {
     ofSetColor(255);
-    //ofDrawBitmapString("Publisher fps: " + ofToString(fps), 10, 30);
-    ofDrawRectangle(p.x, p.y, rectSize, rectSize);
-    for(int i = 0; i < particles.size(); i++){
+    for (int i = 0; i < particles.size(); i++) {
     particles[i]->display();
     }
   }
 }
-
-void ofApp::updateDrawMode(){
+void ofApp::updateDrawMode() {
   drawMode = ++drawMode % 4; // move through 4 drawing modes (0, 1, 2, 3)
   //ofBackground(color); // clear the screen when changing drawing mode
   if(drawMode == 2){
@@ -137,9 +125,7 @@ void ofApp::updateDrawMode(){
   bResetParticles = true;
   bUpdateDrawMode = false;
 }
-
-//--------------------------------------------------------------
-void ofApp::resetParticles(){
+void ofApp::resetParticles() {
   // clear existing particles
   for(int i = 0; i < particles.size(); i++){
     delete particles[i];
@@ -157,7 +143,6 @@ void ofApp::resetParticles(){
   }
   bResetParticles = false;
 }
-
 void ofApp::keyPressed(int key) {
 
 }
