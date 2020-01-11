@@ -6,6 +6,7 @@ void ofApp::setup() {
   //  glPointSize(3);
 
   gui.setup("panel");
+  gui.add(cutMotion.set("CutMotion", false));
   gui.add(hideSketch.set("Sketch", false));
   gui.add(hideTypo.set("Typo", false));
   gui.add(elasticityMin.set("elasticityMin", 0.01, 0.01, 0.99));
@@ -15,7 +16,7 @@ void ofApp::setup() {
   gui.add(color.set("color", ofColor(100, 100, 140), ofColor(0, 0), ofColor(255, 255)));
   gui.loadFromFile("settings.xml");
 
-  ofxPublishOsc("localhost", 9005, "/color", color);
+  ofxPublishOsc("localhost", 9005, "/cutMotion", cutMotion);
   ofxPublishOsc("localhost", 9005, "/hideSketch", hideSketch);
   ofxPublishOsc("localhost", 9005, "/hideTypo", hideTypo);
   ofxPublishOsc("localhost", 9005, "/elasticityMin", elasticityMin);
@@ -23,7 +24,7 @@ void ofApp::setup() {
   ofxPublishOsc("localhost", 9005, "/dampingMin", dampingMin);
   ofxPublishOsc("localhost", 9005, "/dampingMax", dampingMax);
   ofxPublishOsc("localhost", 9005, "/cursor", p);
-
+  ofxPublishOsc("localhost", 9005, "/color", color);
   bHide = false;
 }
 void ofApp::update() {

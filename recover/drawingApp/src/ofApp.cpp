@@ -10,6 +10,8 @@ void ofApp::setup() {
   ofSetVerticalSync(false);
   glPointSize(1);
   //  ofEnableDepthTest();
+
+  ofxSubscribeOsc(9005, "/cutMotion", cutMotion);
   ofxSubscribeOsc(9005, "/hideSketch", hideSketch);
   ofxSubscribeOsc(9005, "/hideTypo", hideTypo);
   ofxSubscribeOsc(9005, "/color", color);
@@ -32,6 +34,7 @@ void ofApp::setup() {
   bg_color = ofColor(255);
   fbo_color = ofColor(0);
 
+  cutMotion = false;
   hideSketch = false;
   bUpdateDrawMode = false;
   bResetParticles = true;
@@ -65,6 +68,20 @@ void ofApp::setup() {
   childNode.setPosition(0, 0, 200);
   grandChildNode.setParent(childNode);
   grandChildNode.setPosition(0, 50, 0);
+
+  string imageDir = "/home/aris/Pictures/lyon/";
+  for (int i = 0; i < 61; i++) {
+    string number;
+    std::string s;
+    std::stringstream out;
+    out << i;
+    s = out.str();
+    imageDir += s;
+    imageDir += ".jpg";
+    cout << imageDir << endl;
+    image[i].loadImage(imageDir);
+    imageDir = "/home/aris/Pictures/lyon/";
+  }
 }
 void ofApp::update() {
   if (hideSketch != hideSketchOld) {
@@ -119,6 +136,13 @@ void ofApp::draw() {
     ofSetColor(255);
     for (int i = 0; i < particles.size(); i++) {
     particles[i]->display();
+    }
+  }
+  if (cutMotion) {
+    for (int i = 0; i < 10; ++i) {
+      ofSetColor(255);
+      ofFill();
+      image[i].draw(ofRandom(0, 500), ofRandom(0, 500), ofRandom(0, 500), ofRandom(0, 500));
     }
   }
 }

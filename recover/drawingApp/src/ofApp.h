@@ -29,6 +29,7 @@ class ofApp : public ofBaseApp{
   void resetParticles();
 
   bool hideSketch, hideSketchOld, hideTypo, hideTypoOld;
+  bool cutMotion;
   // sketch
   ofSketch sketch[2048];
   float elasticityMin;
@@ -56,6 +57,9 @@ class ofApp : public ofBaseApp{
   ofPixels pix;
 
   vector <Particle *> particles;
+
+  // Images
+  ofImage image[200];
 
  private:
   ofColor color;

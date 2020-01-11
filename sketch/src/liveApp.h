@@ -95,7 +95,7 @@ public:
 		
 	//================
 	//	IMAGES
-	ofImage			image[200];
+  ofImage			image[200];
 		
 	//================
 	//	SKETCH

@@ -23,6 +23,7 @@ class ofApp : public ofBaseApp{
   void dragEvent(ofDragInfo dragInfo);
   void gotMessage(ofMessage msg);
 
+  ofParameter<bool> cutMotion;
   ofParameter<bool> hideMouse;
   ofParameter<bool> hideSketch;
   ofParameter<bool> hideTypo;
