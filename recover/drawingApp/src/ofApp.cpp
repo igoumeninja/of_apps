@@ -19,6 +19,7 @@ void ofApp::setup() {
   ofxSubscribeOsc(9005, "/dampingMax", dampingMax);
   ofxSubscribeOsc(9005, "/color", color);
   ofxSubscribeOsc(9005, "/cursor", p);
+  ofxSubscribeOsc(9005, "/onset", [](){ofBackground(0,0,0);});
   string fontpath = "arial.ttf";
   ofTrueTypeFontSettings settings(fontpath, 250);
 
