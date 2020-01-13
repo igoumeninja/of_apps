@@ -11,8 +11,12 @@ void ofApp::setup() {
   glPointSize(1);
   //  ofEnableDepthTest();
 
+  //ofxSubscribeOsc(9005, "/soundSketch/x",[](const std::string &str){ofLogNotice() << "receive " << str;});
   ofxSubscribeOsc(9005, "/cutMotion", cutMotion);
-  ofxSubscribeOsc(9005, "/hideSketch", hideSketch);
+  ofxSubscribeOsc(9005, "/soundSketch", soundSketch);
+  ofxSubscribeOsc(9005, "/soundSketch/x", xSoundSketch);
+  ofxSubscribeOsc(9005, "/soundSketch/y", ySoundSketch);
+  ofxSubscribeOsc(9005, "/autoSketch", autoSketch);
   ofxSubscribeOsc(9005, "/hideTypo", hideTypo);
   ofxSubscribeOsc(9005, "/color", color);
   ofxSubscribeOsc(9005, "/elasticityMin", elasticityMin);
@@ -21,7 +25,8 @@ void ofApp::setup() {
   ofxSubscribeOsc(9005, "/dampingMax", dampingMax);
   ofxSubscribeOsc(9005, "/color", color);
   ofxSubscribeOsc(9005, "/cursor", p);
-  ofxSubscribeOsc(9005, "/onset", [](){ofBackground(0,0,0);});
+  ofxSubscribeOsc(9005, "/onset", [](){ofBackground(0, 0, 0);});
+
   string fontpath = "arial.ttf";
   ofTrueTypeFontSettings settings(fontpath, 250);
 
@@ -35,7 +40,10 @@ void ofApp::setup() {
   fbo_color = ofColor(0);
 
   cutMotion = false;
-  hideSketch = false;
+  soundSketch = false;
+  autoSketch = false;
+  hideTypo = false;
+  
   bUpdateDrawMode = false;
   bResetParticles = true;
 
@@ -81,15 +89,25 @@ void ofApp::setup() {
     cout << imageDir << endl;
     image[i].loadImage(imageDir);
     imageDir = "/home/aris/Pictures/lyon/";
+
   }
 }
 void ofApp::update() {
-  if (hideSketch != hideSketchOld) {
+  if (soundSketch != soundSketchOld) {
     color = ofColor(0, 0, 0, 5);
-    hideSketchOld = hideSketch;
+    soundSketchOld = soundSketch;
   }
-  if (hideSketch) {
+  if (soundSketch) {
     for (int i = 0; i < 100; i++) {
+      sketch[i].init(1, ofRandom(elasticityMin, elasticityMax), ofRandom (dampingMin, dampingMax));
+    }
+  }  // soundSketch
+  if (autoSketch != autoSketchOld) {
+    color = ofColor(0, 0, 0, 5);
+    autoSketchOld = autoSketch;
+  }
+  if (autoSketch) {
+    for (int i = 100; i < 200; i++) {
       sketch[i].init(1, ofRandom(elasticityMin, elasticityMax), ofRandom (dampingMin, dampingMax));
     }
 
@@ -99,7 +117,7 @@ void ofApp::update() {
     if (line.size() > 100) {
       line.getVertices().erase( line.getVertices().begin());
     }
-  }  // sketch
+  }  // autoSketch
   if (hideTypo != hideTypoOld) {
     color = ofColor(255, 255, 255, 5);
     hideTypoOld = hideTypo;
@@ -120,22 +138,25 @@ void ofApp::draw() {
   ofSetColor(color);
   ofFill();
   ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
-  if (hideSketch) {
+  if (soundSketch) {
     cam.begin();
-    //  uncomment these 3 lines to understand how nodes are moving
-    //  baseNode.draw();
-    //  childNode.draw();
-    //  grandChildNode.draw();
-    //  line.draw();
     for (int i=0; i < 100; i++) {
+      sketch[i].drawMouse3D(ofMap(xSoundSketch, 0, 1, 0, ofGetWidth(), true), ofMap(ySoundSketch, 20,1000,0, ofGetHeight(), true), 0, 255,255,255,155,1);
+      //sketch[i].drawMouse3D(xSoundSketch, ySoundSketch, 255,255,255,155,1);
+    }
+    cam.end();
+  }  // soundSketch
+  if (autoSketch) {
+    cam.begin();
+    for (int i=100; i < 200; i++) {
       sketch[i].drawMouse3D(grandChildNode.getGlobalPosition().x,grandChildNode.getGlobalPosition().y,grandChildNode.getGlobalPosition().z, 255,255,255,155,1);
     }
     cam.end();
-  }  // sketch
+  }  // autoSketch
   if (hideTypo) {
     ofSetColor(255);
     for (int i = 0; i < particles.size(); i++) {
-    particles[i]->display();
+      particles[i]->display();
     }
   }
   if (cutMotion) {

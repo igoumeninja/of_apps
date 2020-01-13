@@ -28,8 +28,10 @@ class ofApp : public ofBaseApp{
   void updateDrawMode();
   void resetParticles();
 
-  bool hideSketch, hideSketchOld, hideTypo, hideTypoOld;
+  bool autoSketch, autoSketchOld, hideTypo, hideTypoOld;
   bool cutMotion;
+  bool soundSketch, soundSketchOld;
+  float xSoundSketch, ySoundSketch;
   // sketch
   ofSketch sketch[2048];
   float elasticityMin;

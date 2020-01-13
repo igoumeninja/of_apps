@@ -25,7 +25,8 @@ class ofApp : public ofBaseApp{
 
   ofParameter<bool> cutMotion;
   ofParameter<bool> hideMouse;
-  ofParameter<bool> hideSketch;
+  ofParameter<bool> autoSketch;
+  ofParameter<bool> soundSketch;
   ofParameter<bool> hideTypo;
   ofParameter<float> elasticityMin;
   ofParameter<float> elasticityMax;

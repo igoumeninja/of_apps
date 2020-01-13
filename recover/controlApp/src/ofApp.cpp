@@ -7,17 +7,20 @@ void ofApp::setup() {
 
   gui.setup("panel");
   gui.add(cutMotion.set("CutMotion", false));
-  gui.add(hideSketch.set("Sketch", false));
+  gui.add(autoSketch.set("autoSketch", false));
+  gui.add(soundSketch.set("soundSketch", false));
   gui.add(hideTypo.set("Typo", false));
   gui.add(elasticityMin.set("elasticityMin", 0.01, 0.01, 0.99));
   gui.add(elasticityMax.set("elasticityMax", 0.01, 0.01, 0.99));
   gui.add(dampingMin.set("dampingMin", 0.01, 0.01, 0.99));
   gui.add(dampingMax.set("dampingMax", 0.01, 0.01, 0.99));
-  gui.add(color.set("color", ofColor(100, 100, 140), ofColor(0, 0), ofColor(255, 255)));
+  gui.add(color.set("color", ofColor(100, 100, 140), ofColor(0, 0),
+                    ofColor(255, 255)));
   gui.loadFromFile("settings.xml");
 
   ofxPublishOsc("localhost", 9005, "/cutMotion", cutMotion);
-  ofxPublishOsc("localhost", 9005, "/hideSketch", hideSketch);
+  ofxPublishOsc("localhost", 9005, "/soundSketch", soundSketch);
+  ofxPublishOsc("localhost", 9005, "/autoSketch", autoSketch);
   ofxPublishOsc("localhost", 9005, "/hideTypo", hideTypo);
   ofxPublishOsc("localhost", 9005, "/elasticityMin", elasticityMin);
   ofxPublishOsc("localhost", 9005, "/elasticityMax", elasticityMax);
@@ -33,7 +36,6 @@ void ofApp::update() {
     p.y = ofGetMouseY();
   }
 }
-
 void ofApp::draw() {
   ofBackground(color);
 
