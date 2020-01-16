@@ -11,7 +11,8 @@ void ofApp::setup() {
   glPointSize(1);
   //  ofEnableDepthTest();
 
-  //ofxSubscribeOsc(9005, "/soundSketch/x",[](const std::string &str){ofLogNotice() << "receive " << str;});
+  //   [](const std::string &str){ofLogNotice() << "receive " << str;});
+  ofxSubscribeOsc(9005, "/mirrorMode", mirrorMode);
   ofxSubscribeOsc(9005, "/cutMotion", cutMotion);
   ofxSubscribeOsc(9005, "/soundSketch", soundSketch);
   ofxSubscribeOsc(9005, "/soundSketch/x", xSoundSketch);
@@ -27,6 +28,8 @@ void ofApp::setup() {
   ofxSubscribeOsc(9005, "/cursor", p);
   ofxSubscribeOsc(9005, "/onset", [](){ofBackground(0, 0, 0);});
 
+  textureScreen.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
+
   string fontpath = "arial.ttf";
   ofTrueTypeFontSettings settings(fontpath, 250);
 
@@ -39,11 +42,12 @@ void ofApp::setup() {
   bg_color = ofColor(255);
   fbo_color = ofColor(0);
 
+  mirrorMode = false;
   cutMotion = false;
   soundSketch = false;
   autoSketch = false;
   hideTypo = false;
-  
+
   bUpdateDrawMode = false;
   bResetParticles = true;
 
@@ -61,15 +65,19 @@ void ofApp::setup() {
   pix.allocate(ofGetWidth(), ofGetHeight(), OF_PIXELS_RGBA);
   fbo.begin();
   ofClear(0, 0, 0, 0);
+
   // Center string code from:
   // https://github.com/armadillu/ofxCenteredTrueTypeFont/blob/master/src/ofxCenteredTrueTypeFont.h
   ofRectangle r = ttf.getStringBoundingBox(s, 0, 0);
-  ofVec2f offset = ofVec2f(floor(-r.x - r.width * 0.5f), floor(-r.y - r.height * 0.5f));
+  ofVec2f offset = ofVec2f(floor(-r.x - r.width * 0.5f),
+                           floor(-r.y - r.height * 0.5f));
   ofSetColor(fbo_color);
-  ttf.drawString(s, fbo.getWidth() / 2 + offset.x, fbo.getHeight() / 2 + offset.y);
+  ttf.drawString(s, fbo.getWidth() / 2 + offset.x,
+                 fbo.getHeight() / 2 + offset.y);
   fbo.end();
 
-  fbo.readToPixels(pix); // the ofPixels class has a convenient getColor() method
+  fbo.readToPixels(pix);  //  the ofPixels class
+                          //  has a convenient getColor() method
 
   baseNode.setPosition(0, 0, 0);
   childNode.setParent(baseNode);
@@ -89,7 +97,6 @@ void ofApp::setup() {
     cout << imageDir << endl;
     image[i].loadImage(imageDir);
     imageDir = "/home/aris/Pictures/lyon/";
-
   }
 }
 void ofApp::update() {
@@ -99,7 +106,8 @@ void ofApp::update() {
   }
   if (soundSketch) {
     for (int i = 0; i < 100; i++) {
-      sketch[i].init(1, ofRandom(elasticityMin, elasticityMax), ofRandom (dampingMin, dampingMax));
+      sketch[i].init(1, ofRandom(elasticityMin, elasticityMax),
+                     ofRandom(dampingMin, dampingMax));
     }
   }  // soundSketch
   if (autoSketch != autoSketchOld) {
@@ -141,8 +149,9 @@ void ofApp::draw() {
   if (soundSketch) {
     cam.begin();
     for (int i=0; i < 100; i++) {
-      sketch[i].drawMouse3D(ofMap(xSoundSketch, 0, 1, 0, ofGetWidth(), true), ofMap(ySoundSketch, 20,1000,0, ofGetHeight(), true), 0, 255,255,255,155,1);
-      //sketch[i].drawMouse3D(xSoundSketch, ySoundSketch, 255,255,255,155,1);
+      sketch[i].drawMouse3D(ofMap(xSoundSketch, 0, 1, 0, ofGetWidth(), true),
+                    ofMap(ySoundSketch, 20, 1000, 0, ofGetHeight(), true), 0,
+                    255, 255, 255, 155, 1);
     }
     cam.end();
   }  // soundSketch
@@ -166,13 +175,21 @@ void ofApp::draw() {
       image[i].draw(ofRandom(0, 500), ofRandom(0, 500), ofRandom(0, 500), ofRandom(0, 500));
     }
   }
+  if (mirrorMode) {
+    textureScreen.loadScreenData(0, 0, ofGetWidth(), ofGetHeight());
+    glPushMatrix();
+    ofSetHexColor(0xffffff);
+    glTranslatef(ofGetWidth(), 0, 0);
+    glRotatef(180, 0, 1.0f, 0);
+    textureScreen.draw(0, 0, ofGetWidth(), ofGetHeight());
+    glPopMatrix();
+  }
 }
 void ofApp::updateDrawMode() {
-  drawMode = ++drawMode % 4; // move through 4 drawing modes (0, 1, 2, 3)
-  //ofBackground(color); // clear the screen when changing drawing mode
-  if(drawMode == 2){
+  drawMode = ++drawMode % 4;
+  if (drawMode == 2) {
     ofSetColor(255);
-    //fbo.draw(0, 0); // draw text to the screen for drawMode 2
+    //  fbo.draw(0, 0);
   }
   bResetParticles = true;
   bUpdateDrawMode = false;

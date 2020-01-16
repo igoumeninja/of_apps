@@ -6,6 +6,7 @@ void ofApp::setup() {
   //  glPointSize(3);
 
   gui.setup("panel");
+  gui.add(mirrorMode.set("MirrorMode", false));
   gui.add(cutMotion.set("CutMotion", false));
   gui.add(autoSketch.set("autoSketch", false));
   gui.add(soundSketch.set("soundSketch", false));
@@ -18,6 +19,7 @@ void ofApp::setup() {
                     ofColor(255, 255)));
   gui.loadFromFile("settings.xml");
 
+  ofxPublishOsc("localhost", 9005, "/mirrorMode", mirrorMode);
   ofxPublishOsc("localhost", 9005, "/cutMotion", cutMotion);
   ofxPublishOsc("localhost", 9005, "/soundSketch", soundSketch);
   ofxPublishOsc("localhost", 9005, "/autoSketch", autoSketch);

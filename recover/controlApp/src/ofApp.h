@@ -23,7 +23,7 @@ class ofApp : public ofBaseApp{
   void dragEvent(ofDragInfo dragInfo);
   void gotMessage(ofMessage msg);
 
-  ofParameter<bool> cutMotion;
+  ofParameter<bool> cutMotion, mirrorMode;
   ofParameter<bool> hideMouse;
   ofParameter<bool> autoSketch;
   ofParameter<bool> soundSketch;
@@ -34,10 +34,10 @@ class ofApp : public ofBaseApp{
   ofParameter<float> dampingMax;
   ofParameter<float> rectSize;
   ofParameter<ofColor> color;
-  
+
   // Old ones
   ofParameter<float> radius;
-  
+
   ofParameter<glm::vec2> center;
   ofParameter<int> circleResolution;
   ofParameter<bool> filled;
@@ -45,8 +45,8 @@ class ofApp : public ofBaseApp{
   ofParameter<string> screenSize;
   ofxPanel gui;
   bool bHide;
-  
+
  private:
   ofPoint p;
-  int rectX, rectY, rectW, rectH;		
+  int rectX, rectY, rectW, rectH;
 };

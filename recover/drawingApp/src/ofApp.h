@@ -29,9 +29,11 @@ class ofApp : public ofBaseApp{
   void resetParticles();
 
   bool autoSketch, autoSketchOld, hideTypo, hideTypoOld;
-  bool cutMotion;
+  bool cutMotion, mirrorMode;
   bool soundSketch, soundSketchOld;
   float xSoundSketch, ySoundSketch;
+
+  ofTexture textureScreen;
   // sketch
   ofSketch sketch[2048];
   float elasticityMin;
