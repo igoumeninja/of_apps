@@ -6,10 +6,12 @@ void ofApp::setup() {
   //  glPointSize(3);
 
   gui.setup("panel");
+  gui.add(fftView.set("fftView", false));
   gui.add(mirrorMode.set("MirrorMode", false));
   gui.add(cutMotion.set("CutMotion", false));
   gui.add(autoSketch.set("autoSketch", false));
   gui.add(soundSketch.set("soundSketch", false));
+  gui.add(onsetOn.set("onsetOn", false));
   gui.add(hideTypo.set("Typo", false));
   gui.add(elasticityMin.set("elasticityMin", 0.01, 0.01, 0.99));
   gui.add(elasticityMax.set("elasticityMax", 0.01, 0.01, 0.99));
@@ -19,6 +21,8 @@ void ofApp::setup() {
                     ofColor(255, 255)));
   gui.loadFromFile("settings.xml");
 
+  ofxPublishOsc("localhost", 9005, "/fftView", fftView);
+  ofxPublishOsc("localhost", 9005, "/onsetOn", onsetOn);
   ofxPublishOsc("localhost", 9005, "/mirrorMode", mirrorMode);
   ofxPublishOsc("localhost", 9005, "/cutMotion", cutMotion);
   ofxPublishOsc("localhost", 9005, "/soundSketch", soundSketch);

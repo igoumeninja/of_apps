@@ -1,4 +1,5 @@
 // Copyright 2019 Aris Bezas
+
 #include "ofApp.h"
 void ofApp::setup() {
   ofBackground(0, 0, 0);
@@ -9,9 +10,9 @@ void ofApp::setup() {
   ofSetFrameRate(60);  // if vertical sync is off, we can go faster
   ofSetVerticalSync(false);
   glPointSize(1);
-  //  ofEnableDepthTest();
+  //ofEnableDepthTest();
 
-  //   [](const std::string &str){ofLogNotice() << "receive " << str;});
+  ofxSubscribeOsc(9005, "/fftView", fftView);
   ofxSubscribeOsc(9005, "/mirrorMode", mirrorMode);
   ofxSubscribeOsc(9005, "/cutMotion", cutMotion);
   ofxSubscribeOsc(9005, "/soundSketch", soundSketch);
@@ -26,7 +27,21 @@ void ofApp::setup() {
   ofxSubscribeOsc(9005, "/dampingMax", dampingMax);
   ofxSubscribeOsc(9005, "/color", color);
   ofxSubscribeOsc(9005, "/cursor", p);
-  ofxSubscribeOsc(9005, "/onset", [](){ofBackground(0, 0, 0);});
+  ofxSubscribeOsc(9005, "/onsetOn", onsetOn);
+  ofxSubscribeOsc(9005, "/onset", [&condition = onsetOn](){if (condition) {ofBackground(255, 0, 0); }});
+  //ofxSubscribeOsc(9005, "/onset", [](ofColor bg_color){ofBackground(bg_color);});
+  // ofxSubscribeOsc(9005, "/onset", [](){ ofBackground(bg_color); });
+
+  sound.load("untitled.wav");
+  sound.play();
+  sound.setLoop(true);
+
+  fft = new float[512];
+  for (int i = 0; i < 512; ++i) {
+    fft[i] = 0;
+  }
+  bands = 512;
+
 
   textureScreen.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
 
@@ -38,10 +53,11 @@ void ofApp::setup() {
 
   maxParticles = 200;  // the maximum number of active particles
   drawMode = 1;  // move through the drawing modes by clicking the mouse
-
-  bg_color = ofColor(255);
+  bg_color = ofColor(0, 0, 0, 15);
   fbo_color = ofColor(0);
 
+  fftView = false;
+  onsetOn = false;
   mirrorMode = false;
   cutMotion = false;
   soundSketch = false;
@@ -100,6 +116,16 @@ void ofApp::setup() {
   }
 }
 void ofApp::update() {
+  if (fftView) {
+    ofSoundUpdate();
+    soundSpectrum = ofSoundGetSpectrum(bands);
+    for (int i = 0; i < bands; i++) {
+      fft[i] *= 0.9;
+      if (fft[i] < soundSpectrum[i]) {
+        fft[i] = soundSpectrum[i];
+      }
+    }
+  }
   if (soundSketch != soundSketchOld) {
     color = ofColor(0, 0, 0, 5);
     soundSketchOld = soundSketch;
@@ -116,14 +142,15 @@ void ofApp::update() {
   }
   if (autoSketch) {
     for (int i = 100; i < 200; i++) {
-      sketch[i].init(1, ofRandom(elasticityMin, elasticityMax), ofRandom (dampingMin, dampingMax));
+      sketch[i].init(1, ofRandom(elasticityMin, elasticityMax),
+                     ofRandom(dampingMin, dampingMax));
     }
 
     baseNode.pan(1);
     childNode.tilt(5);
     line.addVertex(grandChildNode.getGlobalPosition());
     if (line.size() > 100) {
-      line.getVertices().erase( line.getVertices().begin());
+      line.getVertices().erase(line.getVertices().begin());
     }
   }  // autoSketch
   if (hideTypo != hideTypoOld) {
@@ -131,21 +158,33 @@ void ofApp::update() {
     hideTypoOld = hideTypo;
   }
   if (hideTypo) {
-    if(bUpdateDrawMode){
+    if (bUpdateDrawMode) {
       updateDrawMode();
     }
-    if(bResetParticles){
+    if (bResetParticles) {
       resetParticles();
     }
-    for(int i = 0; i < particles.size(); i++){
+    for (int i = 0; i < particles.size(); i++) {
       particles[i]->update();
     }
   }
 }
+
 void ofApp::draw() {
   ofSetColor(color);
   ofFill();
   ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+  if (fftView) {
+    ofSetColor(255, 255, 255, 255);
+    ofTranslate(256, 150);
+    for (int i = 0; i < bands; i+=16) {
+      ofPolyline polyline;
+      for (int j = 0; j < bands; ++j) {
+        polyline.addVertex(j, i-fft[j] * 1000.0);
+      }
+      polyline.draw();
+    }
+  }
   if (soundSketch) {
     cam.begin();
     for (int i=0; i < 100; i++) {
@@ -158,7 +197,10 @@ void ofApp::draw() {
   if (autoSketch) {
     cam.begin();
     for (int i=100; i < 200; i++) {
-      sketch[i].drawMouse3D(grandChildNode.getGlobalPosition().x,grandChildNode.getGlobalPosition().y,grandChildNode.getGlobalPosition().z, 255,255,255,155,1);
+      sketch[i].drawMouse3D(grandChildNode.getGlobalPosition().x,
+                            grandChildNode.getGlobalPosition().y,
+                            grandChildNode.getGlobalPosition().z,
+                            255, 255, 255, 155, 1);
     }
     cam.end();
   }  // autoSketch
@@ -172,7 +214,8 @@ void ofApp::draw() {
     for (int i = 0; i < 10; ++i) {
       ofSetColor(255);
       ofFill();
-      image[i].draw(ofRandom(0, 500), ofRandom(0, 500), ofRandom(0, 500), ofRandom(0, 500));
+      image[i].draw(ofRandom(0, 500), ofRandom(0, 500),
+                    ofRandom(0, 500), ofRandom(0, 500));
     }
   }
   if (mirrorMode) {
@@ -196,15 +239,15 @@ void ofApp::updateDrawMode() {
 }
 void ofApp::resetParticles() {
   // clear existing particles
-  for(int i = 0; i < particles.size(); i++){
+  for (int i = 0; i < particles.size(); i++) {
     delete particles[i];
     particles[i] = NULL;
   }
   particles.clear();
   // create new particles
-  if(particles.size() < maxParticles){
+  if (particles.size() < maxParticles) {
     int difference = maxParticles - particles.size();
-    for(int i = 0; i < difference; i++){
+    for (int i = 0; i < difference; i++) {
       Particle * p = new Particle();
       p->setup(&pix, fbo_color, drawMode);
       particles.push_back(p);
@@ -212,34 +255,14 @@ void ofApp::resetParticles() {
   }
   bResetParticles = false;
 }
-void ofApp::keyPressed(int key) {
-
-}
-void ofApp::keyReleased(int key) {
-
-}
-void ofApp::mouseMoved(int x, int y ) {
-
-}
-void ofApp::mouseDragged(int x, int y, int button) {
-
-}
-void ofApp::mousePressed(int x, int y, int button) {
-
-}
-void ofApp::mouseReleased(int x, int y, int button) {
-
-}
-void ofApp::mouseEntered(int x, int y) {
-
-}
-void ofApp::mouseExited(int x, int y) {
-
-}
-void ofApp::windowResized(int w, int h) {
-
-}
-void ofApp::gotMessage(ofMessage msg) {
-
-}
+void ofApp::keyPressed(int key) { }
+void ofApp::keyReleased(int key) { }
+void ofApp::mouseMoved(int x, int y ) { }
+void ofApp::mouseDragged(int x, int y, int button) { }
+void ofApp::mousePressed(int x, int y, int button) { }
+void ofApp::mouseReleased(int x, int y, int button) { }
+void ofApp::mouseEntered(int x, int y) { }
+void ofApp::mouseExited(int x, int y) { }
+void ofApp::windowResized(int w, int h) { }
+void ofApp::gotMessage(ofMessage msg) { }
 void ofApp::dragEvent(ofDragInfo dragInfo) { }

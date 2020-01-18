@@ -23,7 +23,7 @@ class ofApp : public ofBaseApp{
   void dragEvent(ofDragInfo dragInfo);
   void gotMessage(ofMessage msg);
 
-  ofParameter<bool> cutMotion, mirrorMode;
+  ofParameter<bool> cutMotion, mirrorMode, onsetOn, fftView;
   ofParameter<bool> hideMouse;
   ofParameter<bool> autoSketch;
   ofParameter<bool> soundSketch;
@@ -37,7 +37,6 @@ class ofApp : public ofBaseApp{
 
   // Old ones
   ofParameter<float> radius;
-
   ofParameter<glm::vec2> center;
   ofParameter<int> circleResolution;
   ofParameter<bool> filled;

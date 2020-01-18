@@ -1,7 +1,6 @@
 //  Copyright 2019
 #pragma once
 
-#include "ofMain.h"
 #include "ofxOscSubscriber.h"
 #include "Particle.h"
 #include "ofSketch.h"
@@ -28,8 +27,15 @@ class ofApp : public ofBaseApp{
   void updateDrawMode();
   void resetParticles();
 
-  bool autoSketch, autoSketchOld, hideTypo, hideTypoOld;
-  bool cutMotion, mirrorMode;
+  void onsetFunc();
+
+  ofSoundPlayer sound;
+  float *fft;
+  float *soundSpectrum;
+  int bands;
+
+  bool autoSketch, autoSketchOld, hideTypo, hideTypoOld, fftView;
+  bool cutMotion, mirrorMode, onsetOn;
   bool soundSketch, soundSketchOld;
   float xSoundSketch, ySoundSketch;
 
