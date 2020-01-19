@@ -1,7 +1,7 @@
 // Copyright 2019 Aris Bezas
-
 #include "ofApp.h"
 void ofApp::setup() {
+
   ofBackground(0, 0, 0);
   ofSetWindowPosition(0, 0);
   ofEnableSmoothing();
@@ -10,7 +10,7 @@ void ofApp::setup() {
   ofSetFrameRate(60);  // if vertical sync is off, we can go faster
   ofSetVerticalSync(false);
   glPointSize(1);
-  //ofEnableDepthTest();
+  // ofEnableDepthTest();
 
   ofxSubscribeOsc(9005, "/fftView", fftView);
   ofxSubscribeOsc(9005, "/mirrorMode", mirrorMode);
@@ -28,9 +28,11 @@ void ofApp::setup() {
   ofxSubscribeOsc(9005, "/color", color);
   ofxSubscribeOsc(9005, "/cursor", p);
   ofxSubscribeOsc(9005, "/onsetOn", onsetOn);
-  ofxSubscribeOsc(9005, "/onset", [&condition = onsetOn](){if (condition) {ofBackground(255, 0, 0); }});
-  //ofxSubscribeOsc(9005, "/onset", [](ofColor bg_color){ofBackground(bg_color);});
-  // ofxSubscribeOsc(9005, "/onset", [](){ ofBackground(bg_color); });
+  ofxSubscribeOsc(9005, "/onset",
+                  [&condition = onsetOn](){
+                    if (condition) {ofBackground(255, 0, 0); }});
+
+  fftTexture.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
 
   sound.load("untitled.wav");
   sound.play();
@@ -55,8 +57,11 @@ void ofApp::setup() {
   drawMode = 1;  // move through the drawing modes by clicking the mouse
   bg_color = ofColor(0, 0, 0, 15);
   fbo_color = ofColor(0);
+  color = ofColor(0, 0, 0, 0);
 
-  fftView = false;
+  fillBackground = true;
+  fftView = true;
+  fftPolyline = false;
   onsetOn = false;
   mirrorMode = false;
   cutMotion = false;
@@ -93,7 +98,7 @@ void ofApp::setup() {
   fbo.end();
 
   fbo.readToPixels(pix);  //  the ofPixels class
-                          //  has a convenient getColor() method
+  //  has a convenient getColor() method
 
   baseNode.setPosition(0, 0, 0);
   childNode.setParent(baseNode);
@@ -113,8 +118,7 @@ void ofApp::setup() {
     cout << imageDir << endl;
     image[i].loadImage(imageDir);
     imageDir = "/home/aris/Pictures/lyon/";
-  }
-}
+  }}
 void ofApp::update() {
   if (fftView) {
     ofSoundUpdate();
@@ -122,24 +126,17 @@ void ofApp::update() {
     for (int i = 0; i < bands; i++) {
       fft[i] *= 0.9;
       if (fft[i] < soundSpectrum[i]) {
-        fft[i] = soundSpectrum[i];
-      }
-    }
-  }
+        fft[i] = soundSpectrum[i];}}}
   if (soundSketch != soundSketchOld) {
     color = ofColor(0, 0, 0, 5);
-    soundSketchOld = soundSketch;
-  }
+    soundSketchOld = soundSketch;}
   if (soundSketch) {
     for (int i = 0; i < 100; i++) {
       sketch[i].init(1, ofRandom(elasticityMin, elasticityMax),
-                     ofRandom(dampingMin, dampingMax));
-    }
-  }  // soundSketch
+                     ofRandom(dampingMin, dampingMax));}}
   if (autoSketch != autoSketchOld) {
     color = ofColor(0, 0, 0, 5);
-    autoSketchOld = autoSketch;
-  }
+    autoSketchOld = autoSketch;}
   if (autoSketch) {
     for (int i = 100; i < 200; i++) {
       sketch[i].init(1, ofRandom(elasticityMin, elasticityMax),
@@ -150,9 +147,7 @@ void ofApp::update() {
     childNode.tilt(5);
     line.addVertex(grandChildNode.getGlobalPosition());
     if (line.size() > 100) {
-      line.getVertices().erase(line.getVertices().begin());
-    }
-  }  // autoSketch
+      line.getVertices().erase(line.getVertices().begin());}}
   if (hideTypo != hideTypoOld) {
     color = ofColor(255, 255, 255, 5);
     hideTypoOld = hideTypo;
@@ -167,14 +162,39 @@ void ofApp::update() {
     for (int i = 0; i < particles.size(); i++) {
       particles[i]->update();
     }
-  }
-}
-
+  }}
 void ofApp::draw() {
-  ofSetColor(color);
-  ofFill();
-  ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+  if (fillBackground) {
+    ofSetColor(color);
+    ofFill();
+    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());}
   if (fftView) {
+    for (int i=0; i < 512; i++) {
+      glColor3f(255*fft[i], 255*fft[i], 255*fft[i]);
+      ofEllipse(ofGetWidth()/2, 512-i, 2, 2);
+    }
+    fftTexture.loadScreenData(0, 0, ofGetWidth()/2, ofGetHeight()/2);
+    ofSetColor(255, 255, 255, 255);
+    fftTexture.draw(-1, 0, ofGetWidth()/2, ofGetHeight()/2);
+    fftTexture.loadScreenData(0, 0, ofGetWidth()/2, ofGetHeight()/2);
+
+    glPushMatrix();
+    ofSetHexColor(0xffffff);
+    glTranslatef(ofGetWidth(), 0, 0);
+    glRotatef(180, 0, 1.0f, 0);
+    fftTexture.draw(0, 0,
+                    ofGetWidth()/2, ofGetHeight()/2);
+    glPopMatrix();
+
+    fftTexture.loadScreenData(0, 0, ofGetWidth(), ofGetHeight()/2);
+
+    glPushMatrix();
+    glTranslatef(0, ofGetHeight(), 0);
+    glRotatef(180, 1.0f, 0, 0);
+    fftTexture.draw(0, 0,
+                  ofGetWidth(), ofGetHeight()/2);
+    glPopMatrix();}
+  if (fftPolyline) {
     ofSetColor(255, 255, 255, 255);
     ofTranslate(256, 150);
     for (int i = 0; i < bands; i+=16) {
@@ -183,17 +203,15 @@ void ofApp::draw() {
         polyline.addVertex(j, i-fft[j] * 1000.0);
       }
       polyline.draw();
-    }
-  }
+    }}
   if (soundSketch) {
     cam.begin();
     for (int i=0; i < 100; i++) {
       sketch[i].drawMouse3D(ofMap(xSoundSketch, 0, 1, 0, ofGetWidth(), true),
-                    ofMap(ySoundSketch, 20, 1000, 0, ofGetHeight(), true), 0,
-                    255, 255, 255, 155, 1);
+                            ofMap(ySoundSketch, 20, 1000, 0, ofGetHeight(), true), 0,
+                            255, 255, 255, 155, 1);
     }
-    cam.end();
-  }  // soundSketch
+    cam.end();}
   if (autoSketch) {
     cam.begin();
     for (int i=100; i < 200; i++) {
@@ -202,22 +220,19 @@ void ofApp::draw() {
                             grandChildNode.getGlobalPosition().z,
                             255, 255, 255, 155, 1);
     }
-    cam.end();
-  }  // autoSketch
+    cam.end();}
   if (hideTypo) {
     ofSetColor(255);
     for (int i = 0; i < particles.size(); i++) {
       particles[i]->display();
-    }
-  }
+    }}
   if (cutMotion) {
     for (int i = 0; i < 10; ++i) {
       ofSetColor(255);
       ofFill();
       image[i].draw(ofRandom(0, 500), ofRandom(0, 500),
                     ofRandom(0, 500), ofRandom(0, 500));
-    }
-  }
+    }}
   if (mirrorMode) {
     textureScreen.loadScreenData(0, 0, ofGetWidth(), ofGetHeight());
     glPushMatrix();
@@ -225,9 +240,7 @@ void ofApp::draw() {
     glTranslatef(ofGetWidth(), 0, 0);
     glRotatef(180, 0, 1.0f, 0);
     textureScreen.draw(0, 0, ofGetWidth(), ofGetHeight());
-    glPopMatrix();
-  }
-}
+    glPopMatrix();}}
 void ofApp::updateDrawMode() {
   drawMode = ++drawMode % 4;
   if (drawMode == 2) {
@@ -235,8 +248,7 @@ void ofApp::updateDrawMode() {
     //  fbo.draw(0, 0);
   }
   bResetParticles = true;
-  bUpdateDrawMode = false;
-}
+  bUpdateDrawMode = false;}
 void ofApp::resetParticles() {
   // clear existing particles
   for (int i = 0; i < particles.size(); i++) {
@@ -253,8 +265,7 @@ void ofApp::resetParticles() {
       particles.push_back(p);
     }
   }
-  bResetParticles = false;
-}
+  bResetParticles = false;}
 void ofApp::keyPressed(int key) { }
 void ofApp::keyReleased(int key) { }
 void ofApp::mouseMoved(int x, int y ) { }

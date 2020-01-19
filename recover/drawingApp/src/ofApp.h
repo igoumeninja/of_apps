@@ -33,8 +33,10 @@ class ofApp : public ofBaseApp{
   float *fft;
   float *soundSpectrum;
   int bands;
+  ofTexture  fftTexture;
 
-  bool autoSketch, autoSketchOld, hideTypo, hideTypoOld, fftView;
+  bool fillBackground, autoSketch, autoSketchOld,
+    hideTypo, hideTypoOld, fftView, fftPolyline;
   bool cutMotion, mirrorMode, onsetOn;
   bool soundSketch, soundSketchOld;
   float xSoundSketch, ySoundSketch;
