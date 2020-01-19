@@ -1,7 +1,6 @@
 // Copyright 2019 Aris Bezas
 #include "ofApp.h"
 void ofApp::setup() {
-
   ofBackground(0, 0, 0);
   ofSetWindowPosition(0, 0);
   ofEnableSmoothing();
@@ -34,6 +33,31 @@ void ofApp::setup() {
 
   fftTexture.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
 
+  soundStream.printDeviceList();
+  int bufferSize = 256;
+
+  left.assign(bufferSize, 0.0);
+  right.assign(bufferSize, 0.0);
+  volHistory.assign(400, 0.0);
+  bufferCounter = 0;
+  drawCounter = 0;
+  smoothedVol = 0.0;
+  scaledVol = 0.0;
+
+  ofSoundStreamSettings soundSettings;
+
+  auto devices = soundStream.getMatchingDevices("default");
+  if (!devices.empty()) {
+    soundSettings.setInDevice(devices[0]);
+  }
+
+  soundSettings.setInListener(this);
+  soundSettings.sampleRate = 44100;
+  soundSettings.numOutputChannels = 0;
+  soundSettings.numInputChannels = 2;
+  soundSettings.bufferSize = bufferSize;
+  soundStream.setup(soundSettings);
+  
   sound.load("untitled.wav");
   sound.play();
   sound.setLoop(true);
@@ -115,7 +139,7 @@ void ofApp::setup() {
     s = out.str();
     imageDir += s;
     imageDir += ".jpg";
-    cout << imageDir << endl;
+    // cout << imageDir << endl;
     image[i].loadImage(imageDir);
     imageDir = "/home/aris/Pictures/lyon/";
   }}
@@ -150,8 +174,7 @@ void ofApp::update() {
       line.getVertices().erase(line.getVertices().begin());}}
   if (hideTypo != hideTypoOld) {
     color = ofColor(255, 255, 255, 5);
-    hideTypoOld = hideTypo;
-  }
+    hideTypoOld = hideTypo;}
   if (hideTypo) {
     if (bUpdateDrawMode) {
       updateDrawMode();
@@ -160,9 +183,7 @@ void ofApp::update() {
       resetParticles();
     }
     for (int i = 0; i < particles.size(); i++) {
-      particles[i]->update();
-    }
-  }}
+      particles[i]->update();}}}
 void ofApp::draw() {
   if (fillBackground) {
     ofSetColor(color);
@@ -266,6 +287,28 @@ void ofApp::resetParticles() {
     }
   }
   bResetParticles = false;}
+void ofApp::audioIn(ofSoundBuffer & input) {
+  float curVol = 0.0;
+  // samples are "interleaved"
+  int numCounted = 0;
+
+  // lets go through each sample and calculate the root
+  // mean square which is a rough way to calculate volume
+  for (size_t i = 0; i < input.getNumFrames(); i++) {
+    left[i] = input[i*2]*0.5;
+    right[i] = input[i*2+1]*0.5;
+
+    curVol += left[i] * left[i];
+    curVol += right[i] * right[i];
+    numCounted+=2;
+  }
+  // this is how we get the mean of rms :)
+  curVol /= (float)numCounted;
+  // this is how we get the root of rms :)
+  curVol = sqrt(curVol);
+  smoothedVol *= 0.93;
+  smoothedVol += 0.07 * curVol;
+  bufferCounter++;}
 void ofApp::keyPressed(int key) { }
 void ofApp::keyReleased(int key) { }
 void ofApp::mouseMoved(int x, int y ) { }
@@ -277,3 +320,4 @@ void ofApp::mouseExited(int x, int y) { }
 void ofApp::windowResized(int w, int h) { }
 void ofApp::gotMessage(ofMessage msg) { }
 void ofApp::dragEvent(ofDragInfo dragInfo) { }
+

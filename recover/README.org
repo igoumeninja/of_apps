@@ -1,0 +1,9 @@
+#+TITLE: Recover Project
+
+Η προσπάθεια ύστερα απο 8 χρόνια να στήσω το Project με το οποίο έπαιξα στη Grenoble.
+- Linux instead of Mac OSX
+- Emacs as an IDE
+
+About sound in OF: https://openframeworks.cc/ofBook/chapters/sound.html
+
+Aris Bezas 19/01/2020

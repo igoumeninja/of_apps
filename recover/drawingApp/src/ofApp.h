@@ -27,7 +27,15 @@ class ofApp : public ofBaseApp{
   void updateDrawMode();
   void resetParticles();
 
-  void onsetFunc();
+  void audioIn(ofSoundBuffer & input);
+  vector <float> left;
+  vector <float> right;
+  vector <float> volHistory;
+  int bufferCounter;
+  int drawCounter;
+  float smoothedVol;
+  float scaledVol;
+  ofSoundStream soundStream;
 
   ofSoundPlayer sound;
   float *fft;
