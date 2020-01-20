@@ -11,6 +11,7 @@ void ofApp::setup() {
   glPointSize(1);
   // ofEnableDepthTest();
 
+  
   ofxSubscribeOsc(9005, "/fftView", fftView);
   ofxSubscribeOsc(9005, "/mirrorMode", mirrorMode);
   ofxSubscribeOsc(9005, "/cutMotion", cutMotion);
@@ -32,32 +33,6 @@ void ofApp::setup() {
                     if (condition) {ofBackground(255, 0, 0); }});
 
   fftTexture.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
-
-  soundStream.printDeviceList();
-  int bufferSize = 256;
-
-  left.assign(bufferSize, 0.0);
-  right.assign(bufferSize, 0.0);
-  volHistory.assign(400, 0.0);
-  bufferCounter = 0;
-  drawCounter = 0;
-  smoothedVol = 0.0;
-  scaledVol = 0.0;
-
-  ofSoundStreamSettings soundSettings;
-
-  auto devices = soundStream.getMatchingDevices("default");
-  if (!devices.empty()) {
-    soundSettings.setInDevice(devices[0]);
-  }
-
-  soundSettings.setInListener(this);
-  soundSettings.sampleRate = 44100;
-  soundSettings.numOutputChannels = 0;
-  soundSettings.numInputChannels = 2;
-  soundSettings.bufferSize = bufferSize;
-  soundStream.setup(soundSettings);
-  
   sound.load("untitled.wav");
   sound.play();
   sound.setLoop(true);
@@ -67,7 +42,6 @@ void ofApp::setup() {
     fft[i] = 0;
   }
   bands = 512;
-
 
   textureScreen.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
 
@@ -144,6 +118,7 @@ void ofApp::setup() {
     imageDir = "/home/aris/Pictures/lyon/";
   }}
 void ofApp::update() {
+
   if (fftView) {
     ofSoundUpdate();
     soundSpectrum = ofSoundGetSpectrum(bands);
@@ -287,28 +262,6 @@ void ofApp::resetParticles() {
     }
   }
   bResetParticles = false;}
-void ofApp::audioIn(ofSoundBuffer & input) {
-  float curVol = 0.0;
-  // samples are "interleaved"
-  int numCounted = 0;
-
-  // lets go through each sample and calculate the root
-  // mean square which is a rough way to calculate volume
-  for (size_t i = 0; i < input.getNumFrames(); i++) {
-    left[i] = input[i*2]*0.5;
-    right[i] = input[i*2+1]*0.5;
-
-    curVol += left[i] * left[i];
-    curVol += right[i] * right[i];
-    numCounted+=2;
-  }
-  // this is how we get the mean of rms :)
-  curVol /= (float)numCounted;
-  // this is how we get the root of rms :)
-  curVol = sqrt(curVol);
-  smoothedVol *= 0.93;
-  smoothedVol += 0.07 * curVol;
-  bufferCounter++;}
 void ofApp::keyPressed(int key) { }
 void ofApp::keyReleased(int key) { }
 void ofApp::mouseMoved(int x, int y ) { }
