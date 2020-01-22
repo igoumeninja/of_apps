@@ -11,7 +11,7 @@ void ofApp::setup() {
   glPointSize(1);
   // ofEnableDepthTest();
 
-  
+  ofxSubscribeOsc(12345, "/testaki", [](){ofBackground(255, 0, 0); });
   ofxSubscribeOsc(9005, "/fftView", fftView);
   ofxSubscribeOsc(9005, "/mirrorMode", mirrorMode);
   ofxSubscribeOsc(9005, "/cutMotion", cutMotion);
@@ -58,7 +58,7 @@ void ofApp::setup() {
   color = ofColor(0, 0, 0, 0);
 
   fillBackground = true;
-  fftView = true;
+  fftView = false;
   fftPolyline = false;
   onsetOn = false;
   mirrorMode = false;

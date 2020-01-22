@@ -1,6 +1,7 @@
 #include "ofApp.h"
 
 void ofApp::setup() {
+  sender.setup(HOST, PORT);
   ofSetVerticalSync(true);
 
   plotHeight = 128;
@@ -34,8 +35,7 @@ void ofApp::setup() {
   appWidth = ofGetWidth();
   appHeight = ofGetHeight();
 
-  ofBackground(0, 0, 0);
-}
+  ofBackground(0, 0, 0);}
 
 void ofApp::draw() {
   ofSetColor(255);
@@ -129,7 +129,7 @@ void ofApp::audioReceived(float* input, int bufferSize, int nChannels) {
     //glColor3f(255*audioBins[logi], 255*audioBins[logi], 255*audioBins[logi]);
     //ofEllipse(ofGetWidth()/2, 512-i, 2, 2);
   }
-  
+
   spectrogramOffset = (spectrogramOffset + 1) % spectrogramWidth;
 	
   soundMutex.lock();
@@ -138,7 +138,7 @@ void ofApp::audioReceived(float* input, int bufferSize, int nChannels) {
   soundMutex.unlock();
 }
 
-void ofApp::keyPressed(int key) {
+void ofApp::keyPressed(int key){
   switch (key) {
     case 'm':
       mode = MIC;
@@ -150,4 +150,90 @@ void ofApp::keyPressed(int key) {
       mode = SINE;
       break;
   }
+	// send a test message
+	if(key == 'a' || key == 'A'){
+		ofxOscMessage m;
+		m.setAddress("/test");
+		m.addIntArg(1);
+		m.addFloatArg(3.5f);
+		m.addStringArg("hello");
+		m.addFloatArg(ofGetElapsedTimef());
+		sender.sendMessage(m, false);
+	}
+
+	// send an image
+	// note: the size of the image depends greatly on your network buffer sizes,
+	// if an image is too big the message won't come through and you may need
+	// to break it up into multiple blobs
+	if(key == 'i' || key == 'I'){
+
+		// load image from buffer
+		img.load(imgAsBuffer);
+
+		// send as a binary blob
+		ofxOscMessage m;
+		m.setAddress("/image");
+		m.addBlobArg(imgAsBuffer);
+		sender.sendMessage(m);
+		ofLog() << "sending image with size: " << imgAsBuffer.size();
+	}
+}
+
+//--------------------------------------------------------------
+void ofApp::keyReleased(int key){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseMoved(int x, int y){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseDragged(int x, int y, int button){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::mousePressed(int x, int y, int button){
+  ofxOscMessage m;
+  m.setAddress("/testaki");
+  m.addIntArg(1);
+  m.addStringArg("down");
+  sender.sendMessage(m, false);
+  
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseReleased(int x, int y, int button){
+	ofxOscMessage m;
+	m.setAddress("/mouse/button");
+	m.addIntArg(0);
+	m.addStringArg("up");
+	sender.sendMessage(m, false);
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseEntered(int x, int y){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseExited(int x, int y){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::windowResized(int w, int h){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::gotMessage(ofMessage msg){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::dragEvent(ofDragInfo dragInfo){
+
 }
