@@ -120,15 +120,17 @@ void ofApp::audioReceived(float* input, int bufferSize, int nChannels) {
 	
   int spectrogramWidth = (int) spectrogram.getWidth();
   int n = (int) spectrogram.getHeight();
-  
 
+  cout << n << endl;
+  ofxOscMessage m;
+  m.setAddress("/testaki");
   for(int i = 0; i < n; i++) {
     int j = (n - i - 1) * spectrogramWidth + spectrogramOffset;
     int logi = ofMap(powFreq(i), powFreq(0), powFreq(n), 0, n);
     spectrogram.setColor(j, (unsigned char) (255. * audioBins[logi]));
-    //glColor3f(255*audioBins[logi], 255*audioBins[logi], 255*audioBins[logi]);
-    //ofEllipse(ofGetWidth()/2, 512-i, 2, 2);
+    m.addFloatArg(audioBins[logi]);
   }
+  sender.sendMessage(m, false);
 
   spectrogramOffset = (spectrogramOffset + 1) % spectrogramWidth;
 	

@@ -5,6 +5,11 @@
 #include "Particle.h"
 #include "ofSketch.h"
 #include <vector>
+// listening port
+#define PORT 12345
+
+// max number of strings to display
+#define NUM_MSG_STRINGS 20
 
 class ofApp : public ofBaseApp{
  public:
@@ -26,8 +31,14 @@ class ofApp : public ofBaseApp{
 
   void updateDrawMode();
   void resetParticles();
+  
+  ofxOscReceiver receiver;
+  int currentMsgString;
+  string msgStrings[NUM_MSG_STRINGS];
+  float timers[NUM_MSG_STRINGS];
 
-
+  //vector<float> fftData;;
+  //float *fftData;
   ofSoundPlayer sound;
   float *fft;
   float *soundSpectrum;

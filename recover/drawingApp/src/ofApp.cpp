@@ -1,131 +1,170 @@
 // Copyright 2019 Aris Bezas
 #include "ofApp.h"
 void ofApp::setup() {
-  ofBackground(0, 0, 0);
-  ofSetWindowPosition(0, 0);
-  ofEnableSmoothing();
-  ofSetBackgroundAuto(true);
-  ofEnableAlphaBlending();
-  ofSetFrameRate(60);  // if vertical sync is off, we can go faster
-  ofSetVerticalSync(false);
-  glPointSize(1);
-  // ofEnableDepthTest();
-
-  ofxSubscribeOsc(12345, "/testaki", [](){ofBackground(255, 0, 0); });
-  ofxSubscribeOsc(9005, "/fftView", fftView);
-  ofxSubscribeOsc(9005, "/mirrorMode", mirrorMode);
-  ofxSubscribeOsc(9005, "/cutMotion", cutMotion);
-  ofxSubscribeOsc(9005, "/soundSketch", soundSketch);
-  ofxSubscribeOsc(9005, "/soundSketch/x", xSoundSketch);
-  ofxSubscribeOsc(9005, "/soundSketch/y", ySoundSketch);
-  ofxSubscribeOsc(9005, "/autoSketch", autoSketch);
-  ofxSubscribeOsc(9005, "/hideTypo", hideTypo);
-  ofxSubscribeOsc(9005, "/color", color);
-  ofxSubscribeOsc(9005, "/elasticityMin", elasticityMin);
-  ofxSubscribeOsc(9005, "/elasticityMax", elasticityMax);
-  ofxSubscribeOsc(9005, "/dampingMin", dampingMin);
-  ofxSubscribeOsc(9005, "/dampingMax", dampingMax);
-  ofxSubscribeOsc(9005, "/color", color);
-  ofxSubscribeOsc(9005, "/cursor", p);
-  ofxSubscribeOsc(9005, "/onsetOn", onsetOn);
-  ofxSubscribeOsc(9005, "/onset",
+  // Global Definition
+    ofBackground(0, 0, 0);
+    ofSetWindowPosition(0, 0);
+    ofEnableSmoothing();
+    ofSetBackgroundAuto(true);
+    ofEnableAlphaBlending();
+    ofSetFrameRate(60);  // if vertical sync is off, we can go faster
+    ofSetVerticalSync(false);
+    glPointSize(1);
+    ofEnableAntiAliasing();
+    ofSetFrameRate(60);
+    ofSetBackgroundAuto(false);
+    // ofEnableDepthTest();
+  // OSC communication
+    receiver.setup(PORT);
+    ofxSubscribeOsc(9005, "/fftView", fftView);
+    ofxSubscribeOsc(9005, "/mirrorMode", mirrorMode);
+    ofxSubscribeOsc(9005, "/cutMotion", cutMotion);
+    ofxSubscribeOsc(9005, "/soundSketch", soundSketch);
+    ofxSubscribeOsc(9005, "/soundSketch/x", xSoundSketch);
+    ofxSubscribeOsc(9005, "/soundSketch/y", ySoundSketch);
+    ofxSubscribeOsc(9005, "/autoSketch", autoSketch);
+    ofxSubscribeOsc(9005, "/hideTypo", hideTypo);
+    ofxSubscribeOsc(9005, "/color", color);
+    ofxSubscribeOsc(9005, "/elasticityMin", elasticityMin);
+    ofxSubscribeOsc(9005, "/elasticityMax", elasticityMax);
+    ofxSubscribeOsc(9005, "/dampingMin", dampingMin);
+    ofxSubscribeOsc(9005, "/dampingMax", dampingMax);
+    ofxSubscribeOsc(9005, "/color", color);
+    ofxSubscribeOsc(9005, "/cursor", p);
+    ofxSubscribeOsc(9005, "/onsetOn", onsetOn);
+    ofxSubscribeOsc(9005, "/onset",
                   [&condition = onsetOn](){
                     if (condition) {ofBackground(255, 0, 0); }});
+  // FFT
+    fftTexture.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
+    fft = new float[512];
+    for (int i = 0; i < 512; ++i) {
+      fft[i] = 0;
+    }
+    bands = 512;
+  // Mirror Effects
+    textureScreen.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
+  // Typography - Particles
+    maxParticles = 200;  // the maximum number of active particles
+    drawMode = 1;  // move through the drawing modes by clicking the mouse
 
-  fftTexture.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
-  sound.load("untitled.wav");
-  sound.play();
-  sound.setLoop(true);
+    fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
+    pix.allocate(ofGetWidth(), ofGetHeight(), OF_PIXELS_RGBA);
+    fbo.begin();
+    ofClear(0, 0, 0, 0);
 
-  fft = new float[512];
-  for (int i = 0; i < 512; ++i) {
-    fft[i] = 0;
-  }
-  bands = 512;
+    // Center string code from:
+    // https://github.com/armadillu/ofxCenteredTrueTypeFont/blob/master/src/ofxCenteredTrueTypeFont.h
+    ofRectangle r = ttf.getStringBoundingBox(s, 0, 0);
+    ofVec2f offset = ofVec2f(floor(-r.x - r.width * 0.5f),
+                             floor(-r.y - r.height * 0.5f));
+    ofSetColor(fbo_color);
+    ttf.drawString(s, fbo.getWidth() / 2 + offset.x,
+                   fbo.getHeight() / 2 + offset.y);
+    fbo.end();
 
-  textureScreen.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
+    fbo.readToPixels(pix);  //  the ofPixels class
+    
+    string fontpath = "arial.ttf";
+    ofTrueTypeFontSettings settings(fontpath, 250);
 
-  string fontpath = "arial.ttf";
-  ofTrueTypeFontSettings settings(fontpath, 250);
+    settings.antialiased = true;
+    settings.addRanges(ofAlphabet::Greek);
+    ofTrueTypeFont ttf;
+    ttf.loadFont("arial.ttf", 250);
+    ttf.load(settings);
+    string s = "επιθυμίες";
+  // Start Values
+    fillBackground = true;
+    fftView = true;
+    fftPolyline = false;
+    onsetOn = false;
+    mirrorMode = false;
+    cutMotion = false;
+    soundSketch = false;
+    autoSketch = false;
+    hideTypo = false;
 
-  settings.antialiased = true;
-  settings.addRanges(ofAlphabet::Greek);
-
-  maxParticles = 200;  // the maximum number of active particles
-  drawMode = 1;  // move through the drawing modes by clicking the mouse
-  bg_color = ofColor(0, 0, 0, 15);
-  fbo_color = ofColor(0);
-  color = ofColor(0, 0, 0, 0);
-
-  fillBackground = true;
-  fftView = false;
-  fftPolyline = false;
-  onsetOn = false;
-  mirrorMode = false;
-  cutMotion = false;
-  soundSketch = false;
-  autoSketch = false;
-  hideTypo = false;
-
-  bUpdateDrawMode = false;
-  bResetParticles = true;
-
-  ofBackground(bg_color);
-  ofSetBackgroundAuto(false);
-  ofEnableAntiAliasing();
-  ofSetFrameRate(60);
-
-  ofTrueTypeFont ttf;
-  ttf.loadFont("arial.ttf", 250);
-  ttf.load(settings);
-  string s = "επιθυμίες";
-
-  fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
-  pix.allocate(ofGetWidth(), ofGetHeight(), OF_PIXELS_RGBA);
-  fbo.begin();
-  ofClear(0, 0, 0, 0);
-
-  // Center string code from:
-  // https://github.com/armadillu/ofxCenteredTrueTypeFont/blob/master/src/ofxCenteredTrueTypeFont.h
-  ofRectangle r = ttf.getStringBoundingBox(s, 0, 0);
-  ofVec2f offset = ofVec2f(floor(-r.x - r.width * 0.5f),
-                           floor(-r.y - r.height * 0.5f));
-  ofSetColor(fbo_color);
-  ttf.drawString(s, fbo.getWidth() / 2 + offset.x,
-                 fbo.getHeight() / 2 + offset.y);
-  fbo.end();
-
-  fbo.readToPixels(pix);  //  the ofPixels class
-  //  has a convenient getColor() method
-
-  baseNode.setPosition(0, 0, 0);
-  childNode.setParent(baseNode);
-  childNode.setPosition(0, 0, 200);
-  grandChildNode.setParent(childNode);
-  grandChildNode.setPosition(0, 50, 0);
-
-  string imageDir = "/home/aris/Pictures/lyon/";
-  for (int i = 0; i < 61; i++) {
-    string number;
-    std::string s;
-    std::stringstream out;
-    out << i;
-    s = out.str();
-    imageDir += s;
-    imageDir += ".jpg";
-    // cout << imageDir << endl;
-    image[i].loadImage(imageDir);
-    imageDir = "/home/aris/Pictures/lyon/";
-  }}
+    bUpdateDrawMode = false;
+    bResetParticles = true;
+    bg_color = ofColor(0, 0, 0, 35);
+    fbo_color = ofColor(0);
+    color = ofColor(0, 0, 0, 0);
+    ofBackground(bg_color);
+  // Auto Sketch
+    baseNode.setPosition(0, 0, 0);
+    childNode.setParent(baseNode);
+    childNode.setPosition(0, 0, 200);
+    grandChildNode.setParent(childNode);
+    grandChildNode.setPosition(0, 50, 0);
+  // Load Images
+    string imageDir = "/home/aris/Pictures/lyon/";
+    for (int i = 0; i < 61; i++) {
+      string number;
+      std::string s;
+      std::stringstream out;
+      out << i;
+      s = out.str();
+      imageDir += s;
+      imageDir += ".jpg";
+      // cout << imageDir << endl;
+      image[i].loadImage(imageDir);
+      imageDir = "/home/aris/Pictures/lyon/";
+    }
+}
 void ofApp::update() {
+  for (int i = 0; i < NUM_MSG_STRINGS; i++) {
+    if (timers[i] < ofGetElapsedTimef()) {
+      msgStrings[i] = "";
+    }}
+  while (receiver.hasWaitingMessages()) {
 
-  if (fftView) {
-    ofSoundUpdate();
-    soundSpectrum = ofSoundGetSpectrum(bands);
-    for (int i = 0; i < bands; i++) {
-      fft[i] *= 0.9;
-      if (fft[i] < soundSpectrum[i]) {
-        fft[i] = soundSpectrum[i];}}}
+    // get the next message
+    ofxOscMessage m;
+    receiver.getNextMessage(m);
+
+    if(m.getAddress() == "/fftData"){
+      for (int i=0; i<512; i++)	{
+        fft[i] = m.getArgAsFloat( i );
+      }
+    }
+
+    else{
+
+      // unrecognized message: display on the bottom of the screen
+      string msgString;
+      msgString = m.getAddress();
+      msgString += ":";
+      for(size_t i = 0; i < m.getNumArgs(); i++){
+
+        // get the argument type
+        msgString += " ";
+        msgString += m.getArgTypeName(i);
+        msgString += ":";
+
+        // display the argument - make sure we get the right type
+        if(m.getArgType(i) == OFXOSC_TYPE_INT32){
+          msgString += ofToString(m.getArgAsInt32(i));
+        }
+        else if(m.getArgType(i) == OFXOSC_TYPE_FLOAT){
+          msgString += ofToString(m.getArgAsFloat(i));
+        }
+        else if(m.getArgType(i) == OFXOSC_TYPE_STRING){
+          msgString += m.getArgAsString(i);
+        }
+        else{
+          msgString += "unhandled argument type " + m.getArgTypeName(i);
+        }
+      }
+
+      // add to the list of strings to display
+      msgStrings[currentMsgString] = msgString;
+      timers[currentMsgString] = ofGetElapsedTimef() + 5.0f;
+      currentMsgString = (currentMsgString + 1) % NUM_MSG_STRINGS;
+
+      // clear the next line
+      msgStrings[currentMsgString] = "";
+    }}
   if (soundSketch != soundSketchOld) {
     color = ofColor(0, 0, 0, 5);
     soundSketchOld = soundSketch;}
@@ -188,7 +227,7 @@ void ofApp::draw() {
     glTranslatef(0, ofGetHeight(), 0);
     glRotatef(180, 1.0f, 0, 0);
     fftTexture.draw(0, 0,
-                  ofGetWidth(), ofGetHeight()/2);
+                    ofGetWidth(), ofGetHeight()/2);
     glPopMatrix();}
   if (fftPolyline) {
     ofSetColor(255, 255, 255, 255);
