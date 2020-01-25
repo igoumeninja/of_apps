@@ -55,6 +55,17 @@ void ofApp::setup() {
 
     // Center string code from:
     // https://github.com/armadillu/ofxCenteredTrueTypeFont/blob/master/src/ofxCenteredTrueTypeFont.h
+    ofTrueTypeFont ttf;
+        
+    string fontpath = "arial.ttf";
+    ofTrueTypeFontSettings settings(fontpath, 250);
+
+    settings.antialiased = true;
+    settings.addRanges(ofAlphabet::Greek);
+    
+    ttf.loadFont("arial.ttf", 250);
+    ttf.load(settings);
+    string s = "επιθυμίες";
     ofRectangle r = ttf.getStringBoundingBox(s, 0, 0);
     ofVec2f offset = ofVec2f(floor(-r.x - r.width * 0.5f),
                              floor(-r.y - r.height * 0.5f));
@@ -64,19 +75,9 @@ void ofApp::setup() {
     fbo.end();
 
     fbo.readToPixels(pix);  //  the ofPixels class
-    
-    string fontpath = "arial.ttf";
-    ofTrueTypeFontSettings settings(fontpath, 250);
-
-    settings.antialiased = true;
-    settings.addRanges(ofAlphabet::Greek);
-    ofTrueTypeFont ttf;
-    ttf.loadFont("arial.ttf", 250);
-    ttf.load(settings);
-    string s = "επιθυμίες";
   // Start Values
     fillBackground = true;
-    fftView = true;
+    fftView = false;
     fftPolyline = false;
     onsetOn = false;
     mirrorMode = false;
@@ -118,53 +119,16 @@ void ofApp::update() {
       msgStrings[i] = "";
     }}
   while (receiver.hasWaitingMessages()) {
-
     // get the next message
     ofxOscMessage m;
     receiver.getNextMessage(m);
 
-    if(m.getAddress() == "/fftData"){
-      for (int i=0; i<512; i++)	{
-        fft[i] = m.getArgAsFloat( i );
+    if (m.getAddress() == "/fftData") {
+      for (int i=0; i < 512; i++) {
+        fft[i] = m.getArgAsFloat(i);
       }
+    } else if (m.getAddress() == "/mouse/button") { }
     }
-
-    else{
-
-      // unrecognized message: display on the bottom of the screen
-      string msgString;
-      msgString = m.getAddress();
-      msgString += ":";
-      for(size_t i = 0; i < m.getNumArgs(); i++){
-
-        // get the argument type
-        msgString += " ";
-        msgString += m.getArgTypeName(i);
-        msgString += ":";
-
-        // display the argument - make sure we get the right type
-        if(m.getArgType(i) == OFXOSC_TYPE_INT32){
-          msgString += ofToString(m.getArgAsInt32(i));
-        }
-        else if(m.getArgType(i) == OFXOSC_TYPE_FLOAT){
-          msgString += ofToString(m.getArgAsFloat(i));
-        }
-        else if(m.getArgType(i) == OFXOSC_TYPE_STRING){
-          msgString += m.getArgAsString(i);
-        }
-        else{
-          msgString += "unhandled argument type " + m.getArgTypeName(i);
-        }
-      }
-
-      // add to the list of strings to display
-      msgStrings[currentMsgString] = msgString;
-      timers[currentMsgString] = ofGetElapsedTimef() + 5.0f;
-      currentMsgString = (currentMsgString + 1) % NUM_MSG_STRINGS;
-
-      // clear the next line
-      msgStrings[currentMsgString] = "";
-    }}
   if (soundSketch != soundSketchOld) {
     color = ofColor(0, 0, 0, 5);
     soundSketchOld = soundSketch;}
@@ -312,4 +276,7 @@ void ofApp::mouseExited(int x, int y) { }
 void ofApp::windowResized(int w, int h) { }
 void ofApp::gotMessage(ofMessage msg) { }
 void ofApp::dragEvent(ofDragInfo dragInfo) { }
-
+// Usefull code
+  // if (ofGetFrameNum() % 60 == 0)
+  // float sinOfTime2              = sin( ofGetElapsedTimef() + PI);
+  // float sinOfTimeMapped2        = ofMap(sinOfTime2, -1, 1, 0, 255);
