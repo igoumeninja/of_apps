@@ -23,6 +23,7 @@ class ofApp : public ofBaseApp{
   void dragEvent(ofDragInfo dragInfo);
   void gotMessage(ofMessage msg);
 
+  ofParameter<bool> startFFT;
   ofParameter<bool> cutMotion, mirrorMode, onsetOn, fftView;
   ofParameter<bool> hideMouse;
   ofParameter<bool> autoSketch;

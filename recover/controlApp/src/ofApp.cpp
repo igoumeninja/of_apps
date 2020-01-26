@@ -6,6 +6,7 @@ void ofApp::setup() {
   //  glPointSize(3);
 
   gui.setup("panel");
+  gui.add(startFFT.set("startFFT", false));
   gui.add(fftView.set("fftView", false));
   gui.add(mirrorMode.set("MirrorMode", false));
   gui.add(cutMotion.set("CutMotion", false));
@@ -19,8 +20,10 @@ void ofApp::setup() {
   gui.add(dampingMax.set("dampingMax", 0.01, 0.01, 0.99));
   gui.add(color.set("color", ofColor(100, 100, 140), ofColor(0, 0),
                     ofColor(255, 255)));
+
   gui.loadFromFile("settings.xml");
 
+  ofxPublishOsc("localhost", 57120, "/startFFT", startFFT);
   ofxPublishOsc("localhost", 9005, "/fftView", fftView);
   ofxPublishOsc("localhost", 9005, "/onsetOn", onsetOn);
   ofxPublishOsc("localhost", 9005, "/mirrorMode", mirrorMode);
@@ -36,24 +39,12 @@ void ofApp::setup() {
   ofxPublishOsc("localhost", 9005, "/color", color);
   bHide = false;
 }
-void ofApp::update() {
-  if (hideMouse) {
-    p.x = ofGetMouseX();
-    p.y = ofGetMouseY();
-  }
-}
+void ofApp::update() {}
 void ofApp::draw() {
   ofBackground(color);
-
-  if (!bHide) {
-    gui.draw();
-  }
+  gui.draw();
 }
-void ofApp::keyPressed(int key) {
-  if (key == 'm') {
-    hideMouse = !hideMouse;
-  }
-}
+void ofApp::keyPressed(int key) {}
 void ofApp::keyReleased(int key) {}
 void ofApp::mouseMoved(int x, int y ) {}
 void ofApp::mouseDragged(int x, int y, int button) {}

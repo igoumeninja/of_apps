@@ -56,13 +56,11 @@ void ofApp::setup() {
     // Center string code from:
     // https://github.com/armadillu/ofxCenteredTrueTypeFont/blob/master/src/ofxCenteredTrueTypeFont.h
     ofTrueTypeFont ttf;
-        
     string fontpath = "arial.ttf";
     ofTrueTypeFontSettings settings(fontpath, 250);
 
     settings.antialiased = true;
     settings.addRanges(ofAlphabet::Greek);
-    
     ttf.loadFont("arial.ttf", 250);
     ttf.load(settings);
     string s = "επιθυμίες";
@@ -207,7 +205,7 @@ void ofApp::draw() {
     cam.begin();
     for (int i=0; i < 100; i++) {
       sketch[i].drawMouse3D(ofMap(xSoundSketch, 0, 1, 0, ofGetWidth(), true),
-                            ofMap(ySoundSketch, 20, 1000, 0, ofGetHeight(), true), 0,
+                    ofMap(ySoundSketch, 20, 1000, 0, ofGetHeight(), true), 0,
                             255, 255, 255, 155, 1);
     }
     cam.end();}
@@ -280,3 +278,4 @@ void ofApp::dragEvent(ofDragInfo dragInfo) { }
   // if (ofGetFrameNum() % 60 == 0)
   // float sinOfTime2              = sin( ofGetElapsedTimef() + PI);
   // float sinOfTimeMapped2        = ofMap(sinOfTime2, -1, 1, 0, 255);
+  // https://www.youtube.com/watch?v=J_FIWS5C2wc about ofxGui Group
