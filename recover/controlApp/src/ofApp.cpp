@@ -18,6 +18,10 @@ void ofApp::setup() {
   gui.add(elasticityMax.set("elasticityMax", 0.01, 0.01, 0.99));
   gui.add(dampingMin.set("dampingMin", 0.01, 0.01, 0.99));
   gui.add(dampingMax.set("dampingMax", 0.01, 0.01, 0.99));
+  gui.add(xSoundSketchMin.set("xSoundSketchMin", 0.01, 0.01, 0.99));
+  gui.add(xSoundSketchMax.set("xSoundSketchMax", 0.01, 0.01, 0.99));
+  gui.add(ySoundSketchMin.set("ySoundSketchMin", 0.01, 0.01, 1000.99));
+  gui.add(ySoundSketchMax.set("ySoundSketchMax", 0.01, 0.01, 100000.99));
   gui.add(color.set("color", ofColor(100, 100, 140), ofColor(0, 0),
                     ofColor(255, 255)));
 
@@ -35,6 +39,10 @@ void ofApp::setup() {
   ofxPublishOsc("localhost", 9005, "/elasticityMax", elasticityMax);
   ofxPublishOsc("localhost", 9005, "/dampingMin", dampingMin);
   ofxPublishOsc("localhost", 9005, "/dampingMax", dampingMax);
+  ofxPublishOsc("localhost", 9005, "/soundSketch/xMin", xSoundSketchMin);
+  ofxPublishOsc("localhost", 9005, "/soundSketch/xMax", xSoundSketchMax);
+  ofxPublishOsc("localhost", 9005, "/soundSketch/yMin", ySoundSketchMin);
+  ofxPublishOsc("localhost", 9005, "/soundSketch/yMax", ySoundSketchMax);
   ofxPublishOsc("localhost", 9005, "/cursor", p);
   ofxPublishOsc("localhost", 9005, "/color", color);
   bHide = false;

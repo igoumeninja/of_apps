@@ -23,26 +23,17 @@ class ofApp : public ofBaseApp{
   void dragEvent(ofDragInfo dragInfo);
   void gotMessage(ofMessage msg);
 
-  ofParameter<bool> startFFT;
-  ofParameter<bool> cutMotion, mirrorMode, onsetOn, fftView;
-  ofParameter<bool> hideMouse;
-  ofParameter<bool> autoSketch;
-  ofParameter<bool> soundSketch;
-  ofParameter<bool> hideTypo;
-  ofParameter<float> elasticityMin;
-  ofParameter<float> elasticityMax;
-  ofParameter<float> dampingMin;
-  ofParameter<float> dampingMax;
-  ofParameter<float> rectSize;
+  ofParameter<bool> cutMotion, mirrorMode, onsetOn, fftView, startFFT;;
+  ofParameter<bool> hideMouse, autoSketch, soundSketch, hideTypo;
+  ofParameter<float> elasticityMin, elasticityMax, dampingMin, dampingMax;
+  ofParameter<float> xSoundSketchMin, xSoundSketchMax,
+    ySoundSketchMin, ySoundSketchMax;
   ofParameter<ofColor> color;
 
   // Old ones
   ofParameter<float> radius;
   ofParameter<glm::vec2> center;
-  ofParameter<int> circleResolution;
-  ofParameter<bool> filled;
   ofxButton ringButton;
-  ofParameter<string> screenSize;
   ofxPanel gui;
   bool bHide;
 

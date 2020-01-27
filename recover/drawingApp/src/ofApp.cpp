@@ -22,6 +22,10 @@ void ofApp::setup() {
     ofxSubscribeOsc(9005, "/soundSketch", soundSketch);
     ofxSubscribeOsc(9005, "/soundSketch/x", xSoundSketch);
     ofxSubscribeOsc(9005, "/soundSketch/y", ySoundSketch);
+    ofxSubscribeOsc(9005, "/soundSketch/xMin", xSoundSketchMin);
+    ofxSubscribeOsc(9005, "/soundSketch/xMax", xSoundSketchMax);
+    ofxSubscribeOsc(9005, "/soundSketch/yMin", ySoundSketchMin);
+    ofxSubscribeOsc(9005, "/soundSketch/yMax", ySoundSketchMax);
     ofxSubscribeOsc(9005, "/autoSketch", autoSketch);
     ofxSubscribeOsc(9005, "/hideTypo", hideTypo);
     ofxSubscribeOsc(9005, "/color", color);
@@ -74,6 +78,8 @@ void ofApp::setup() {
 
     fbo.readToPixels(pix);  //  the ofPixels class
   // Start Values
+    xSoundSketchMin = 0; xSoundSketchMax = 1;
+    ySoundSketchMin = 40; ySoundSketchMax = 800;   
     fillBackground = true;
     fftView = false;
     fftPolyline = false;
@@ -202,13 +208,17 @@ void ofApp::draw() {
       polyline.draw();
     }}
   if (soundSketch) {
-    cam.begin();
+    //cam.begin();
     for (int i=0; i < 100; i++) {
-      sketch[i].drawMouse3D(ofMap(xSoundSketch, 0, 1, 0, ofGetWidth(), true),
-                    ofMap(ySoundSketch, 20, 1000, 0, ofGetHeight(), true), 0,
-                            255, 255, 255, 155, 1);
+      sketch[i].drawMouse3D(
+          ofMap(xSoundSketch, xSoundSketchMin, xSoundSketchMax,
+                0, ofGetWidth(), true),
+          ofMap(ySoundSketch, ySoundSketchMin, ySoundSketchMax,
+                0, ofGetHeight(), true), 0,
+          255, 255, 255, 155, 1);
     }
-    cam.end();}
+    //cam.end();
+    }
   if (autoSketch) {
     cam.begin();
     for (int i=100; i < 200; i++) {
