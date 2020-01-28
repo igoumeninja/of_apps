@@ -6,6 +6,8 @@ void ofApp::setup() {
   //  glPointSize(3);
 
   gui.setup("panel");
+  gui.add(sendOnsets.set("sendOnsets", false));
+  gui.add(sendAmpFreq.set("sendAmpFreq", false));
   gui.add(startFFT.set("startFFT", false));
   gui.add(fftView.set("fftView", false));
   gui.add(mirrorMode.set("MirrorMode", false));
@@ -27,6 +29,8 @@ void ofApp::setup() {
 
   gui.loadFromFile("settings.xml");
 
+  ofxPublishOsc("localhost", 57120, "/sendOnsets", sendOnsets);
+  ofxPublishOsc("localhost", 57120, "/sendAmpFreq", sendAmpFreq);
   ofxPublishOsc("localhost", 57120, "/startFFT", startFFT);
   ofxPublishOsc("localhost", 9005, "/fftView", fftView);
   ofxPublishOsc("localhost", 9005, "/onsetOn", onsetOn);
@@ -45,7 +49,7 @@ void ofApp::setup() {
   ofxPublishOsc("localhost", 9005, "/soundSketch/yMax", ySoundSketchMax);
   ofxPublishOsc("localhost", 9005, "/cursor", p);
   ofxPublishOsc("localhost", 9005, "/color", color);
-  bHide = false;
+
 }
 void ofApp::update() {}
 void ofApp::draw() {

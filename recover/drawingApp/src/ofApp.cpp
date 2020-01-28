@@ -5,7 +5,7 @@ void ofApp::setup() {
     ofBackground(0, 0, 0);
     ofSetWindowPosition(0, 0);
     ofEnableSmoothing();
-    ofSetBackgroundAuto(true);
+    ofSetBackgroundAuto(false);
     ofEnableAlphaBlending();
     ofSetFrameRate(60);  // if vertical sync is off, we can go faster
     ofSetVerticalSync(false);
@@ -37,8 +37,15 @@ void ofApp::setup() {
     ofxSubscribeOsc(9005, "/cursor", p);
     ofxSubscribeOsc(9005, "/onsetOn", onsetOn);
     ofxSubscribeOsc(9005, "/onset",
-                  [&condition = onsetOn](){
-                    if (condition) {ofBackground(255, 0, 0); }});
+                    [&condition = onsetOn, &images = image](){
+                    if (condition) {
+                      // ofBackground(255, 0, 0);
+                      images[static_cast<int>(ofRandom(60))].draw(
+                          static_cast<int>(ofRandom(ofGetScreenWidth())),
+                          static_cast<int>(ofRandom(ofGetScreenHeight())),
+                          static_cast<int>(ofRandom(500)),
+                          static_cast<int>(ofRandom(500)));
+                    }});
   // FFT
     fftTexture.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
     fft = new float[512];
@@ -47,7 +54,7 @@ void ofApp::setup() {
     }
     bands = 512;
   // Mirror Effects
-    textureScreen.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
+    textureScreen.allocate(ofGetScreenWidth(), ofGetScreenHeight(), GL_RGB);
   // Typography - Particles
     maxParticles = 200;  // the maximum number of active particles
     drawMode = 1;  // move through the drawing modes by clicking the mouse
@@ -116,7 +123,7 @@ void ofApp::setup() {
       image[i].loadImage(imageDir);
       imageDir = "/home/aris/Pictures/lyon/";
     }
-}
+    }
 void ofApp::update() {
   for (int i = 0; i < NUM_MSG_STRINGS; i++) {
     if (timers[i] < ofGetElapsedTimef()) {
@@ -208,16 +215,14 @@ void ofApp::draw() {
       polyline.draw();
     }}
   if (soundSketch) {
-    //cam.begin();
     for (int i=0; i < 100; i++) {
       sketch[i].drawMouse3D(
           ofMap(xSoundSketch, xSoundSketchMin, xSoundSketchMax,
                 0, ofGetWidth(), true),
-          ofMap(ySoundSketch, ySoundSketchMin, ySoundSketchMax,
+          ofGetHeight() - ofMap(ySoundSketch, ySoundSketchMin, ySoundSketchMax,
                 0, ofGetHeight(), true), 0,
           255, 255, 255, 155, 1);
     }
-    //cam.end();
     }
   if (autoSketch) {
     cam.begin();
