@@ -18,7 +18,6 @@ void ofApp::setup() {
     receiver.setup(PORT);
     ofxSubscribeOsc(9005, "/fftView", fftView);
     ofxSubscribeOsc(9005, "/mirrorMode", mirrorMode);
-    ofxSubscribeOsc(9005, "/cutMotion", cutMotion);
     ofxSubscribeOsc(9005, "/soundSketch", soundSketch);
     ofxSubscribeOsc(9005, "/soundSketch/x", xSoundSketch);
     ofxSubscribeOsc(9005, "/soundSketch/y", ySoundSketch);
@@ -36,6 +35,12 @@ void ofApp::setup() {
     ofxSubscribeOsc(9005, "/color", color);
     ofxSubscribeOsc(9005, "/cursor", p);
     ofxSubscribeOsc(9005, "/onsetOn", onsetOn);
+    ofxSubscribeOsc(9005, "/drawImage",
+                    [&images = image]
+                    (vector<int> nums){
+                      ofSetColor(255, 255, 255);
+                      images[nums[0]].draw(nums[1], nums[2], nums[3], nums[4]);
+                    });
     ofxSubscribeOsc(9005, "/onset",
                     [&condition = onsetOn, &images = image](){
                     if (condition) {
@@ -237,13 +242,6 @@ void ofApp::draw() {
     ofSetColor(255);
     for (int i = 0; i < particles.size(); i++) {
       particles[i]->display();
-    }}
-  if (cutMotion) {
-    for (int i = 0; i < 10; ++i) {
-      ofSetColor(255);
-      ofFill();
-      image[i].draw(ofRandom(0, 500), ofRandom(0, 500),
-                    ofRandom(0, 500), ofRandom(0, 500));
     }}
   if (mirrorMode) {
     textureScreen.loadScreenData(0, 0, ofGetWidth(), ofGetHeight());

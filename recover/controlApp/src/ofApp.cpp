@@ -11,7 +11,7 @@ void ofApp::setup() {
   gui.add(startFFT.set("startFFT", false));
   gui.add(fftView.set("fftView", false));
   gui.add(mirrorMode.set("MirrorMode", false));
-  gui.add(cutMotion.set("CutMotion", false));
+  gui.add(imageTask.set("imageTask", false));
   gui.add(autoSketch.set("autoSketch", false));
   gui.add(soundSketch.set("soundSketch", false));
   gui.add(onsetOn.set("onsetOn", false));
@@ -29,13 +29,13 @@ void ofApp::setup() {
 
   gui.loadFromFile("settings.xml");
 
+  ofxPublishOsc("localhost", 57120, "/imageTask", imageTask);
   ofxPublishOsc("localhost", 57120, "/sendOnsets", sendOnsets);
   ofxPublishOsc("localhost", 57120, "/sendAmpFreq", sendAmpFreq);
   ofxPublishOsc("localhost", 57120, "/startFFT", startFFT);
   ofxPublishOsc("localhost", 9005, "/fftView", fftView);
   ofxPublishOsc("localhost", 9005, "/onsetOn", onsetOn);
   ofxPublishOsc("localhost", 9005, "/mirrorMode", mirrorMode);
-  ofxPublishOsc("localhost", 9005, "/cutMotion", cutMotion);
   ofxPublishOsc("localhost", 9005, "/soundSketch", soundSketch);
   ofxPublishOsc("localhost", 9005, "/autoSketch", autoSketch);
   ofxPublishOsc("localhost", 9005, "/hideTypo", hideTypo);
@@ -49,7 +49,6 @@ void ofApp::setup() {
   ofxPublishOsc("localhost", 9005, "/soundSketch/yMax", ySoundSketchMax);
   ofxPublishOsc("localhost", 9005, "/cursor", p);
   ofxPublishOsc("localhost", 9005, "/color", color);
-
 }
 void ofApp::update() {}
 void ofApp::draw() {
