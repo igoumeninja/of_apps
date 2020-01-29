@@ -51,35 +51,31 @@ void ofApp::setup() {
                           static_cast<int>(ofRandom(500)),
                           static_cast<int>(ofRandom(500)));
                     }});
-  // FFT
-    fftTexture.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
-    fft = new float[512];
-    for (int i = 0; i < 512; ++i) {
-      fft[i] = 0;
-    }
-    bands = 512;
-  // Mirror Effects
-    textureScreen.allocate(ofGetScreenWidth(), ofGetScreenHeight(), GL_RGB);
   // Typography - Particles
-    maxParticles = 200;  // the maximum number of active particles
-    drawMode = 1;  // move through the drawing modes by clicking the mouse
-
-    fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
-    pix.allocate(ofGetWidth(), ofGetHeight(), OF_PIXELS_RGBA);
-    fbo.begin();
-    ofClear(0, 0, 0, 0);
-
-    // Center string code from:
-    // https://github.com/armadillu/ofxCenteredTrueTypeFont/blob/master/src/ofxCenteredTrueTypeFont.h
-    ofTrueTypeFont ttf;
     string fontpath = "arial.ttf";
     ofTrueTypeFontSettings settings(fontpath, 250);
 
     settings.antialiased = true;
     settings.addRanges(ofAlphabet::Greek);
+
+    maxParticles = 200;  // the maximum number of active particles
+    drawMode = 1;  // move through the drawing modes by clicking the mouse
+
+    bg_color = ofColor(255);
+    fbo_color = ofColor(0);
+
+    bUpdateDrawMode = false;
+    bResetParticles = true;
+
+    ofBackground(bg_color);
+    ofTrueTypeFont ttf;
     ttf.loadFont("arial.ttf", 250);
     ttf.load(settings);
     string s = "επιθυμίες";
+    fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
+    pix.allocate(ofGetWidth(), ofGetHeight(), OF_PIXELS_RGBA);
+    fbo.begin();
+    ofClear(0, 0, 0, 0);
     ofRectangle r = ttf.getStringBoundingBox(s, 0, 0);
     ofVec2f offset = ofVec2f(floor(-r.x - r.width * 0.5f),
                              floor(-r.y - r.height * 0.5f));
@@ -89,23 +85,27 @@ void ofApp::setup() {
     fbo.end();
 
     fbo.readToPixels(pix);  //  the ofPixels class
+  // FFT
+    fftTexture.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
+    fft = new float[512];
+    for (int i = 0; i < 512; ++i) {
+      fft[i] = 0;
+    }
+    bands = 512;
+  // Mirror Effects
+    textureScreen.allocate(ofGetScreenWidth(), ofGetScreenHeight(), GL_RGB);
   // Start Values
     xSoundSketchMin = 0; xSoundSketchMax = 1;
-    ySoundSketchMin = 40; ySoundSketchMax = 800;   
+    ySoundSketchMin = 40; ySoundSketchMax = 800;
     fillBackground = true;
     fftView = false;
     fftPolyline = false;
     onsetOn = false;
     mirrorMode = false;
-    cutMotion = false;
     soundSketch = false;
     autoSketch = false;
     hideTypo = false;
 
-    bUpdateDrawMode = false;
-    bResetParticles = true;
-    bg_color = ofColor(0, 0, 0, 35);
-    fbo_color = ofColor(0);
     color = ofColor(0, 0, 0, 0);
     ofBackground(bg_color);
   // Auto Sketch
@@ -166,9 +166,6 @@ void ofApp::update() {
     line.addVertex(grandChildNode.getGlobalPosition());
     if (line.size() > 100) {
       line.getVertices().erase(line.getVertices().begin());}}
-  if (hideTypo != hideTypoOld) {
-    color = ofColor(255, 255, 255, 5);
-    hideTypoOld = hideTypo;}
   if (hideTypo) {
     if (bUpdateDrawMode) {
       updateDrawMode();

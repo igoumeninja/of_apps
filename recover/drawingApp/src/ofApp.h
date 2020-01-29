@@ -1,14 +1,13 @@
 //  Copyright 2019
 #pragma once
 
+
 #include "ofxOscSubscriber.h"
 #include "Particle.h"
 #include "ofSketch.h"
 #include <vector>
-// listening port
-#define PORT 12345
 
-// max number of strings to display
+#define PORT 12345
 #define NUM_MSG_STRINGS 20
 
 class ofApp : public ofBaseApp{

@@ -31,7 +31,7 @@ class ofApp : public ofBaseApp{
   ofParameter<ofColor> color;
 
   ofxPanel gui;
+
  private:
   ofPoint p;
-
 };

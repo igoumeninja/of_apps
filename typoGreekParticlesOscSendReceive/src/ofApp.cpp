@@ -4,18 +4,15 @@
 void ofApp::setup(){
 
   ofSetWindowShape(1920, 1080);
+
   string fontpath = "arial.ttf";
   ofTrueTypeFontSettings settings(fontpath, 250);
-
   settings.antialiased = true;
   settings.addRanges(ofAlphabet::Greek);
-  ////////////////////////////////////////////////////////////////
   sender.setup(HOST, PORT_SEND);
   receiver.setup(PORT_RECEIVE);
-  ////////////////////////////////////////////////////////////////
   maxParticles = 200; // the maximum number of active particles
   drawMode = 1; // move through the drawing modes by clicking the mouse
-  
   bg_color = ofColor(255);
   fbo_color = ofColor(0);
   

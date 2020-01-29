@@ -29,10 +29,10 @@ void ofApp::setup() {
 
   gui.loadFromFile("settings.xml");
 
-  ofxPublishOsc("localhost", 57120, "/imageTask", imageTask);
-  ofxPublishOsc("localhost", 57120, "/sendOnsets", sendOnsets);
-  ofxPublishOsc("localhost", 57120, "/sendAmpFreq", sendAmpFreq);
-  ofxPublishOsc("localhost", 57120, "/startFFT", startFFT);
+  ofxPublishOsc("localhost", 46100, "/imageTask", imageTask);
+  ofxPublishOsc("localhost", 46100, "/sendOnsets", sendOnsets);
+  ofxPublishOsc("localhost", 46100, "/sendAmpFreq", sendAmpFreq);
+  ofxPublishOsc("localhost", 46100, "/startFFT", startFFT);
   ofxPublishOsc("localhost", 9005, "/fftView", fftView);
   ofxPublishOsc("localhost", 9005, "/onsetOn", onsetOn);
   ofxPublishOsc("localhost", 9005, "/mirrorMode", mirrorMode);
