@@ -62,6 +62,7 @@ class ofApp : public ofBaseApp{
   // typo particles
     int maxParticles;
     int drawMode;
+    ofTrueTypeFont ttf;
   // Colors
     ofColor bg_color;
     ofColor fbo_color;

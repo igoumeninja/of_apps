@@ -23,7 +23,7 @@ class ofApp : public ofBaseApp{
   void dragEvent(ofDragInfo dragInfo);
   void gotMessage(ofMessage msg);
 
-  ofParameter<bool> imageTask, mirrorMode, onsetOn, sendOnsets,
+  ofParameter<bool> letterTask, imageTask, mirrorMode, onsetOn, sendOnsets,
     fftView, startFFT, sendAmpFreq, hideMouse, autoSketch, soundSketch,
     hideTypo;
   ofParameter<float> elasticityMin, elasticityMax, dampingMin, dampingMax,

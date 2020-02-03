@@ -11,6 +11,7 @@ void ofApp::setup() {
   gui.add(startFFT.set("startFFT", false));
   gui.add(fftView.set("fftView", false));
   gui.add(mirrorMode.set("MirrorMode", false));
+  gui.add(letterTask.set("letterTask", false));
   gui.add(imageTask.set("imageTask", false));
   gui.add(autoSketch.set("autoSketch", false));
   gui.add(soundSketch.set("soundSketch", false));
@@ -29,6 +30,7 @@ void ofApp::setup() {
 
   gui.loadFromFile("settings.xml");
 
+  ofxPublishOsc("localhost", 46100, "/letterTask", letterTask);
   ofxPublishOsc("localhost", 46100, "/imageTask", imageTask);
   ofxPublishOsc("localhost", 46100, "/sendOnsets", sendOnsets);
   ofxPublishOsc("localhost", 46100, "/sendAmpFreq", sendAmpFreq);

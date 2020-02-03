@@ -14,6 +14,39 @@ void ofApp::setup() {
     ofSetFrameRate(60);
     ofSetBackgroundAuto(false);
     // ofEnableDepthTest();
+  // Typography - Particles
+    string fontpath = "arial.ttf";
+    ofTrueTypeFontSettings settings(fontpath, 50);
+
+    settings.antialiased = true;
+    settings.addRanges(ofAlphabet::Greek);
+
+    maxParticles = 200;  // the maximum number of active particles
+    drawMode = 1;  // move through the drawing modes by clicking the mouse
+
+    bg_color = ofColor(255);
+    fbo_color = ofColor(0);
+
+    bUpdateDrawMode = false;
+    bResetParticles = true;
+
+    ofBackground(bg_color);
+    ttf.loadFont("arial.ttf", 50);
+    ttf.load(settings);
+    string s = "επιθυμίες";
+    fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
+    pix.allocate(ofGetWidth(), ofGetHeight(), OF_PIXELS_RGBA);
+    fbo.begin();
+    ofClear(0, 0, 0, 0);
+    ofRectangle r = ttf.getStringBoundingBox(s, 0, 0);
+    ofVec2f offset = ofVec2f(floor(-r.x - r.width * 0.5f),
+                             floor(-r.y - r.height * 0.5f));
+    ofSetColor(fbo_color);
+    ttf.drawString(s, fbo.getWidth() / 2 + offset.x,
+                   fbo.getHeight() / 2 + offset.y);
+    fbo.end();
+
+    fbo.readToPixels(pix);  //  the ofPixels class
   // OSC communication
     receiver.setup(PORT);
     ofxSubscribeOsc(9005, "/fftView", fftView);
@@ -41,50 +74,37 @@ void ofApp::setup() {
                       ofSetColor(255, 255, 255);
                       images[nums[0]].draw(nums[1], nums[2], nums[3], nums[4]);
                     });
+
     ofxSubscribeOsc(9005, "/onset",
                     [&condition = onsetOn, &images = image](){
-                    if (condition) {
-                      // ofBackground(255, 0, 0);
-                      images[static_cast<int>(ofRandom(60))].draw(
-                          static_cast<int>(ofRandom(ofGetScreenWidth())),
-                          static_cast<int>(ofRandom(ofGetScreenHeight())),
-                          static_cast<int>(ofRandom(500)),
-                          static_cast<int>(ofRandom(500)));
-                    }});
-  // Typography - Particles
-    string fontpath = "arial.ttf";
-    ofTrueTypeFontSettings settings(fontpath, 250);
-
-    settings.antialiased = true;
-    settings.addRanges(ofAlphabet::Greek);
-
-    maxParticles = 200;  // the maximum number of active particles
-    drawMode = 1;  // move through the drawing modes by clicking the mouse
-
-    bg_color = ofColor(255);
-    fbo_color = ofColor(0);
-
-    bUpdateDrawMode = false;
-    bResetParticles = true;
-
-    ofBackground(bg_color);
-    ofTrueTypeFont ttf;
-    ttf.loadFont("arial.ttf", 250);
-    ttf.load(settings);
-    string s = "επιθυμίες";
-    fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
-    pix.allocate(ofGetWidth(), ofGetHeight(), OF_PIXELS_RGBA);
-    fbo.begin();
-    ofClear(0, 0, 0, 0);
-    ofRectangle r = ttf.getStringBoundingBox(s, 0, 0);
-    ofVec2f offset = ofVec2f(floor(-r.x - r.width * 0.5f),
-                             floor(-r.y - r.height * 0.5f));
-    ofSetColor(fbo_color);
-    ttf.drawString(s, fbo.getWidth() / 2 + offset.x,
-                   fbo.getHeight() / 2 + offset.y);
-    fbo.end();
-
-    fbo.readToPixels(pix);  //  the ofPixels class
+                      if (condition) {
+                        // ofBackground(255, 0, 0);
+                        images[static_cast<int>(ofRandom(60))].draw(
+                            static_cast<int>(ofRandom(ofGetScreenWidth())),
+                            static_cast<int>(ofRandom(ofGetScreenHeight())),
+                            static_cast<int>(ofRandom(500)),
+                            static_cast<int>(ofRandom(500)));
+                      }});
+    // NOT WORKING
+    /*
+    ofxSubscribeOsc(9005, "/writeString", [&font = ttf](vector<int> nums){
+                      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                      // GL_SRC_ALPHA_SATURATE,GL_ONE     GL_SRC_ALPHA, GL_ONE
+                      ofFill();
+                      ofSetColor(255, 255, 255, 255);
+                      ofPushMatrix();
+                      ofTranslate(100, 100);
+                      //ttf.drawString("καλησπέρα", 0, 0);
+                      ofPopMatrix();
+                    });
+    ofxSubscribeOsc(9005, "/fftData2",
+                    [&]
+                    (vector<int> nums){
+                      for (int i=0; i < 512; i++) {
+                        //fft[i] = nums[i];
+                      }
+                    });
+    */
   // FFT
     fftTexture.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
     fft = new float[512];
@@ -135,15 +155,22 @@ void ofApp::update() {
       msgStrings[i] = "";
     }}
   while (receiver.hasWaitingMessages()) {
-    // get the next message
     ofxOscMessage m;
     receiver.getNextMessage(m);
-
     if (m.getAddress() == "/fftData") {
       for (int i=0; i < 512; i++) {
         fft[i] = m.getArgAsFloat(i);
       }
-    } else if (m.getAddress() == "/mouse/button") { }
+      }
+    else if (m.getAddress() == "/writeString") {
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // GL_SRC_ALPHA_SATURATE,GL_ONE     GL_SRC_ALPHA, GL_ONE
+      ofFill();
+      ofSetColor(m.getArgAsInt32( 3 ),m.getArgAsInt32( 4 ),m.getArgAsInt32( 5 ),m.getArgAsInt32( 6 ));
+      ofPushMatrix();
+      ofTranslate(m.getArgAsInt32( 1 ), m.getArgAsInt32(2), 0);
+      ttf.drawString(m.getArgAsString( 0 ), 0, 0);		
+      ofPopMatrix();
+      }
     }
   if (soundSketch != soundSketchOld) {
     color = ofColor(0, 0, 0, 5);
@@ -289,3 +316,4 @@ void ofApp::dragEvent(ofDragInfo dragInfo) { }
   // float sinOfTime2              = sin( ofGetElapsedTimef() + PI);
   // float sinOfTimeMapped2        = ofMap(sinOfTime2, -1, 1, 0, 255);
   // https://www.youtube.com/watch?v=J_FIWS5C2wc about ofxGui Group
+  // static_cast<int>(ofRandom(ofGetScreenWidth()))
