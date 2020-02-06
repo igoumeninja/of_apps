@@ -3,20 +3,19 @@
 void ofApp::setup() {
   ofSetWindowPosition(1700, 0);
   ofEnableSmoothing();
-  //  glPointSize(3);
 
   gui.setup("panel");
-  gui.add(sendOnsets.set("sendOnsets", false));
-  gui.add(sendAmpFreq.set("sendAmpFreq", false));
   gui.add(startFFT.set("startFFT", false));
   gui.add(fftView.set("fftView", false));
   gui.add(mirrorMode.set("MirrorMode", false));
+  gui.add(hideTypo.set("Typo", false));
   gui.add(letterTask.set("letterTask", false));
   gui.add(imageTask.set("imageTask", false));
-  gui.add(autoSketch.set("autoSketch", false));
-  gui.add(soundSketch.set("soundSketch", false));
+  gui.add(sendOnsets.set("sendOnsets", false));
   gui.add(onsetOn.set("onsetOn", false));
-  gui.add(hideTypo.set("Typo", false));
+  gui.add(autoSketch.set("autoSketch", false));
+  gui.add(sendAmpFreq.set("sendAmpFreq", false));
+  gui.add(soundSketch.set("soundSketch", false));
   gui.add(elasticityMin.set("elasticityMin", 0.01, 0.01, 0.99));
   gui.add(elasticityMax.set("elasticityMax", 0.01, 0.01, 0.99));
   gui.add(dampingMin.set("dampingMin", 0.01, 0.01, 0.99));
@@ -54,7 +53,7 @@ void ofApp::setup() {
 }
 void ofApp::update() {}
 void ofApp::draw() {
-  ofBackground(color);
+  ofBackground(0);
   gui.draw();
 }
 void ofApp::keyPressed(int key) {}

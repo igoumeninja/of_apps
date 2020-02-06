@@ -16,7 +16,7 @@ void ofApp::setup() {
     // ofEnableDepthTest();
   // Typography - Particles
     string fontpath = "arial.ttf";
-    ofTrueTypeFontSettings settings(fontpath, 50);
+    ofTrueTypeFontSettings settings(fontpath, 12);
 
     settings.antialiased = true;
     settings.addRanges(ofAlphabet::Greek);
@@ -106,7 +106,7 @@ void ofApp::setup() {
                     });
     */
   // FFT
-    fftTexture.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
+    fftTexture.allocate(ofGetScreenWidth(), ofGetScreenHeight(), GL_RGB);
     fft = new float[512];
     for (int i = 0; i < 512; ++i) {
       fft[i] = 0;

@@ -1,9 +1,13 @@
 #+TITLE: Recover Project
+#+AUTHOR: Aris Bezas
+#+DATE: Δεκέβρης 2019
 
+* Εισαγωγήg
 Η προσπάθεια ύστερα απο 8 χρόνια να στήσω το Project με το οποίο έπαιξα στη Grenoble.
 - Linux instead of Mac OSX
 - Emacs as an IDE
+* Add App Icon
+- https://forum.openframeworks.cc/t/creating-a-appimage-for-linux/33142/10
 
-About sound in OF: https://openframeworks.cc/ofBook/chapters/sound.html
 
-Aris Bezas 19/01/2020
+* About sound in OF: https://openframeworks.cc/ofBook/chapters/sound.html
