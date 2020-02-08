@@ -15,14 +15,12 @@ void ofApp::setup() {
     ofSetBackgroundAuto(false);
     // ofEnableDepthTest();
   // Typography - Particles
-    string fontpath = "arial.ttf";
-    ofTrueTypeFontSettings settings(fontpath, 12);
-
+    //string fontpath = "arial.ttf";
+    ofTrueTypeFontSettings settings("arial.ttf", 220);
     settings.antialiased = true;
     settings.addRanges(ofAlphabet::Greek);
-
-    maxParticles = 200;  // the maximum number of active particles
-    drawMode = 1;  // move through the drawing modes by clicking the mouse
+    maxParticles = 600;  // the maximum number of active particles
+    drawMode = 3;  // move through the drawing modes by clicking the mouse
 
     bg_color = ofColor(255);
     fbo_color = ofColor(0);
@@ -31,7 +29,7 @@ void ofApp::setup() {
     bResetParticles = true;
 
     ofBackground(bg_color);
-    ttf.loadFont("arial.ttf", 50);
+    ttf.loadFont("arial.ttf", 12);
     ttf.load(settings);
     string s = "επιθυμίες";
     fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
@@ -115,6 +113,7 @@ void ofApp::setup() {
   // Mirror Effects
     textureScreen.allocate(ofGetScreenWidth(), ofGetScreenHeight(), GL_RGB);
   // Start Values
+    bg_color = ofColor(255, 255, 255, 25);
     xSoundSketchMin = 0; xSoundSketchMax = 1;
     ySoundSketchMin = 40; ySoundSketchMax = 800;
     fillBackground = true;
@@ -124,7 +123,7 @@ void ofApp::setup() {
     mirrorMode = false;
     soundSketch = false;
     autoSketch = false;
-    hideTypo = false;
+    hideTypo = true;
 
     color = ofColor(0, 0, 0, 0);
     ofBackground(bg_color);
@@ -161,15 +160,25 @@ void ofApp::update() {
       for (int i=0; i < 512; i++) {
         fft[i] = m.getArgAsFloat(i);
       }
-      }
-    else if (m.getAddress() == "/writeString") {
-      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // GL_SRC_ALPHA_SATURATE,GL_ONE     GL_SRC_ALPHA, GL_ONE
+    } else if (m.getAddress() == "/writeString") {
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      // GL_SRC_ALPHA_SATURATE,GL_ONE     GL_SRC_ALPHA, GL_ONE
       ofFill();
-      ofSetColor(m.getArgAsInt32( 3 ),m.getArgAsInt32( 4 ),m.getArgAsInt32( 5 ),m.getArgAsInt32( 6 ));
+      ofSetColor(m.getArgAsInt32(3), m.getArgAsInt32(4),
+                 m.getArgAsInt32(5), m.getArgAsInt32(6));
       ofPushMatrix();
-      ofTranslate(m.getArgAsInt32( 1 ), m.getArgAsInt32(2), 0);
-      ttf.drawString(m.getArgAsString( 0 ), 0, 0);		
+      ofTranslate(m.getArgAsInt32(1), m.getArgAsInt32(2), 0);
+      //string fontpath = "arial.ttf";
+      //ofTrueTypeFontSettings settings(fontpath, 12);
+      ttf.drawString(m.getArgAsString(0), 0, 0);
       ofPopMatrix();
+    } else if (m.getAddress() == "/drawRect") {
+      ofSetColor(m.getArgAsInt32(4), m.getArgAsInt32(5), m.getArgAsInt32(6));
+      ofDrawRectangle(m.getArgAsInt32(0), m.getArgAsInt32(1),
+                      m.getArgAsInt32(2), m.getArgAsInt32(3));
+    } else if (m.getAddress() == "/typoParticleMode") {
+      drawMode = m.getArgAsInt32(0);
+      bUpdateDrawMode = true;
       }
     }
   if (soundSketch != soundSketchOld) {
@@ -276,13 +285,15 @@ void ofApp::draw() {
     textureScreen.draw(0, 0, ofGetWidth(), ofGetHeight());
     glPopMatrix();}}
 void ofApp::updateDrawMode() {
+  cout << drawMode <<endl;
   drawMode = ++drawMode % 4;
   if (drawMode == 2) {
     ofSetColor(255);
-    //  fbo.draw(0, 0);
+    //fbo.draw(0, 0);
   }
   bResetParticles = true;
-  bUpdateDrawMode = false;}
+  bUpdateDrawMode = false;
+  }
 void ofApp::resetParticles() {
   // clear existing particles
   for (int i = 0; i < particles.size(); i++) {

@@ -171,7 +171,7 @@ void ofApp::resetParticles(){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-	bUpdateDrawMode = true;
+  bUpdateDrawMode = true;
 }
 
 //--------------------------------------------------------------
