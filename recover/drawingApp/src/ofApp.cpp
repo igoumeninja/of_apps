@@ -16,7 +16,7 @@ void ofApp::setup() {
     // ofEnableDepthTest();
   // Typography - Particles
     //string fontpath = "arial.ttf";
-    ofTrueTypeFontSettings settings("arial.ttf", 220);
+    ofTrueTypeFontSettings settings("times.ttf", 220);
     settings.antialiased = true;
     settings.addRanges(ofAlphabet::Greek);
     maxParticles = 600;  // the maximum number of active particles
@@ -31,7 +31,7 @@ void ofApp::setup() {
     ofBackground(bg_color);
     ttf.loadFont("arial.ttf", 12);
     ttf.load(settings);
-    string s = "επιθυμίες";
+    string s = "Κατερίνα";
     fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
     pix.allocate(ofGetWidth(), ofGetHeight(), OF_PIXELS_RGBA);
     fbo.begin();
@@ -113,7 +113,6 @@ void ofApp::setup() {
   // Mirror Effects
     textureScreen.allocate(ofGetScreenWidth(), ofGetScreenHeight(), GL_RGB);
   // Start Values
-    bg_color = ofColor(255, 255, 255, 25);
     xSoundSketchMin = 0; xSoundSketchMax = 1;
     ySoundSketchMin = 40; ySoundSketchMax = 800;
     fillBackground = true;
@@ -125,8 +124,8 @@ void ofApp::setup() {
     autoSketch = false;
     hideTypo = true;
 
-    color = ofColor(0, 0, 0, 0);
-    ofBackground(bg_color);
+    color = ofColor(255, 255, 255, 145);
+    ofBackground(255);
   // Auto Sketch
     baseNode.setPosition(0, 0, 0);
     childNode.setParent(baseNode);
@@ -178,7 +177,7 @@ void ofApp::update() {
                       m.getArgAsInt32(2), m.getArgAsInt32(3));
     } else if (m.getAddress() == "/typoParticleMode") {
       drawMode = m.getArgAsInt32(0);
-      bUpdateDrawMode = true;
+      //bUpdateDrawMode = true;
       }
     }
   if (soundSketch != soundSketchOld) {
@@ -286,7 +285,7 @@ void ofApp::draw() {
     glPopMatrix();}}
 void ofApp::updateDrawMode() {
   cout << drawMode <<endl;
-  drawMode = ++drawMode % 4;
+  //drawMode = ++drawMode % 4;
   if (drawMode == 2) {
     ofSetColor(255);
     //fbo.draw(0, 0);

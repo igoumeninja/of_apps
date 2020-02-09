@@ -16,33 +16,35 @@ void Particle::setup(ofPixels * _pix, ofColor _c, int _drawMode){
 
 	getPosition();
 
-	vel.set(1, 0);
+	vel.set(0.51, 0);
 	vel.rotate(ofRandom(360));
 }
 
 //--------------------------------------------------------------
 void Particle::update(){
-	vel.rotate(ofRandom(-45, 45)); // rotate velocity (direction of movement)
+	vel.rotate(ofRandom(-5, 5)); // rotate velocity (direction of movement)
 	loc += vel; // add velocity to position (aka move!)
 	switch(drawMode){
 	 case 0:
 		 // once the particle is outside the text, randomly place it somewhere inside the text
 		 if(!isInText()){
+                   vel = -vel;
 			 getPosition();
 		 }
 		 break;
 
 	 case 1:
 	 case 2:
-		 life -= lifeRate;
+           // life -= lifeRate;
 		 break;
 
 	 case 3:
 		 // combine the behaviors of case 0 (keep particle inside text) and 1 (decrease life)
 		 if(!isInText()){
+                   vel = -vel;
 			 getPosition();
 		 }
-		 life -= lifeRate;
+                 //	 life -= lifeRate;
 		 break;
 	}
 	if(life < 0){
