@@ -14,18 +14,14 @@ void ofApp::setup() {
     ofSetFrameRate(60);
     ofSetBackgroundAuto(false);
     // ofEnableDepthTest();
-  // Typography - Particles
+  // Typography
     //string fontpath = "arial.ttf";
     ofTrueTypeFontSettings settings("times.ttf", 220);
     settings.antialiased = true;
     settings.addRanges(ofAlphabet::Greek);
-    drawMode = 3;  // move through the drawing modes by clicking the mouse
 
     bg_color = ofColor(255);
     fbo_color = ofColor(0);
-
-    bUpdateDrawMode = false;
-    bResetParticles = true;
 
     ofBackground(bg_color);
     ttf.loadFont("arial.ttf", 12);
@@ -120,8 +116,8 @@ void ofApp::setup() {
     mirrorMode = false;
     soundSketch = false;
     autoSketch = false;
-    hideTypo = true;
-
+    hideTypo = false;
+    particleView = true;
     color = ofColor(255, 255, 255, 145);
     ofBackground(255);
   // Auto Sketch
@@ -130,6 +126,43 @@ void ofApp::setup() {
     childNode.setPosition(0, 0, 200);
     grandChildNode.setParent(childNode);
     grandChildNode.setPosition(0, 50, 0);
+  // Particles
+    // this number describes how many bins are used
+    // on my machine, 2 is the ideal number (2^2 = 4x4 pixel bins)
+    // if this number is too high, binning is not effective
+    // because the screen is not subdivided enough. if
+    // it's too low, the bins take up so much memory as to
+    // become inefficient.
+    int binPower = 4;
+
+    particleSystem.setup(ofGetWidth(), ofGetHeight(), binPower);
+    kParticles = 2;  // change that to 5 for MacBook Pro
+    float padding = 0;
+    float maxVelocity = .5;
+    for (int i = 0; i < kParticles * 1024; i++) {
+      float x = ofRandom(padding, ofGetWidth() - padding);
+      float y = ofRandom(padding, ofGetHeight() - padding);
+      float xv = ofRandom(-maxVelocity, maxVelocity);
+      float yv = ofRandom(-maxVelocity, maxVelocity);
+      Particle particle(x, y, xv, yv);
+      particleSystem.add(particle);
+    }
+    rConColor = gConColor = bConColor = 255;
+    rDotColor = gDotColor = bDotColor = 255;
+    timeStep = 1;
+    lineOpacity = 0;
+    pointOpacity = 255;
+    isMousePressed = false;
+    slowMotion = false;
+    particleNeighborhood = 15;
+    particleRepulsion = 1;
+    centerAttraction = .01;
+    forceRadius = 100;
+    forceScale = 10;
+    bounceXstart = 0;
+    bounceYstart = 0;
+    bounceXend = ofGetWidth();
+    bounceYend = ofGetHeight();
   // Load Images
     string imageDir = "/home/aris/Pictures/lyon/";
     for (int i = 0; i < 61; i++) {
@@ -166,19 +199,14 @@ void ofApp::update() {
                  m.getArgAsInt32(5), m.getArgAsInt32(6));
       ofPushMatrix();
       ofTranslate(m.getArgAsInt32(1), m.getArgAsInt32(2), 0);
-      //string fontpath = "arial.ttf";
-      //ofTrueTypeFontSettings settings(fontpath, 12);
       ttf.drawString(m.getArgAsString(0), 0, 0);
       ofPopMatrix();
       } else if (m.getAddress() == "/drawRect") {
       ofSetColor(m.getArgAsInt32(4), m.getArgAsInt32(5), m.getArgAsInt32(6));
       ofDrawRectangle(m.getArgAsInt32(0), m.getArgAsInt32(1),
                       m.getArgAsInt32(2), m.getArgAsInt32(3));
-      } else if (m.getAddress() == "/typoParticleMode") {
-        drawMode = m.getArgAsInt32(0);
-        //bUpdateDrawMode = true;
-        }
       }
+    }
   if (soundSketch != soundSketchOld) {
     color = ofColor(0, 0, 0, 5);
     soundSketchOld = soundSketch;}
@@ -261,6 +289,23 @@ void ofApp::draw() {
                             255, 255, 255, 155, 1);
     }
     cam.end();}
+  if (particleView) {
+    particleSystem.setTimeStep(timeStep);
+    ofSetColor(rConColor, gConColor, bConColor, aConColor);	
+    particleSystem.setupForces();
+    glBegin(GL_LINES);
+    for(int i = 0; i < particleSystem.size(); i++) {
+      Particle& cur = particleSystem[i];
+      particleSystem.addRepulsionForce(cur, particleNeighborhood, particleRepulsion);
+      //cur.bounceOffWalls(0, 0, ofGetWidth(), ofGetHeight());				
+      cur.bounceOffWalls(bounceXstart, bounceYstart, bounceXend, bounceYend);				
+      cur.addDampingForce();
+    }
+    glEnd();
+    particleSystem.update();
+    ofSetColor(255,255,255,255);
+    particleSystem.draw();
+    }
   if (mirrorMode) {
     textureScreen.loadScreenData(0, 0, ofGetWidth(), ofGetHeight());
     glPushMatrix();

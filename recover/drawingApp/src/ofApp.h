@@ -1,14 +1,14 @@
-//  Copyright 2019
-#pragma once
+//  Copyright 2019 and initial definition
+  #pragma once
 
-#include "ofMain.h"
-#include "ofxOscSubscriber.h"
-#include "ofSketch.h"
-#include <vector>
+  #include "ofMain.h"
+  #include "ofxOscSubscriber.h"
+  #include "ofSketch.h"
+  #include "ParticleSystem.h"
+  #include <vector>
 
-#define PORT 12345
-#define NUM_MSG_STRINGS 20
-
+  #define PORT 12345
+  #define NUM_MSG_STRINGS 20
 class ofApp : public ofBaseApp{
  public:
   // the voids
@@ -45,19 +45,27 @@ class ofApp : public ofBaseApp{
     ofNode grandChildNode;
     ofPolyline line;
     ofEasyCam cam;
-  // typo particles
-    int maxParticles;
-    int drawMode;
+  // typography
+    ofFbo fbo;
+    ofPixels pix;
     ofTrueTypeFont ttf;
   // Colors
     ofColor bg_color;
     ofColor fbo_color;
     ofColor color;
   // Particles
-    bool bUpdateDrawMode;
-    bool bResetParticles;
-    ofFbo fbo;
-    ofPixels pix;
+    ParticleSystem particleSystem;
+
+    int rConColor, gConColor, bConColor, aConColor,
+      rDotColor, gDotColor, bDotColor, aDotColor;
+    int bounceXstart, bounceYstart, bounceXend, bounceYend;
+    bool particleView, isMousePressed, slowMotion,
+      viewParticles, iPadPush, pushParticles;
+    float timeStep, pushX, pushY;
+    int lineOpacity, pointOpacity;
+    float particleNeighborhood, particleRepulsion;
+    float centerAttraction;
+    int kParticles, forceScale, forceRadius;
   // Images
     ofImage image[200];
 };
