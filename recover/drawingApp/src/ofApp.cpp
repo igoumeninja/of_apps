@@ -19,7 +19,6 @@ void ofApp::setup() {
     ofTrueTypeFontSettings settings("times.ttf", 220);
     settings.antialiased = true;
     settings.addRanges(ofAlphabet::Greek);
-    maxParticles = 600;  // the maximum number of active particles
     drawMode = 3;  // move through the drawing modes by clicking the mouse
 
     bg_color = ofColor(255);
@@ -64,7 +63,6 @@ void ofApp::setup() {
     ofxSubscribeOsc(9005, "/dampingMin", dampingMin);
     ofxSubscribeOsc(9005, "/dampingMax", dampingMax);
     ofxSubscribeOsc(9005, "/color", color);
-    ofxSubscribeOsc(9005, "/cursor", p);
     ofxSubscribeOsc(9005, "/onsetOn", onsetOn);
     ofxSubscribeOsc(9005, "/drawImage",
                     [&images = image]
@@ -148,18 +146,19 @@ void ofApp::setup() {
     }
     }
 void ofApp::update() {
-  for (int i = 0; i < NUM_MSG_STRINGS; i++) {
-    if (timers[i] < ofGetElapsedTimef()) {
-      msgStrings[i] = "";
-    }}
-  while (receiver.hasWaitingMessages()) {
-    ofxOscMessage m;
-    receiver.getNextMessage(m);
-    if (m.getAddress() == "/fftData") {
+  // OSC responders
+    for (int i = 0; i < NUM_MSG_STRINGS; i++) {
+      if (timers[i] < ofGetElapsedTimef()) {
+        msgStrings[i] = "";
+      }}
+    while (receiver.hasWaitingMessages()) {
+      ofxOscMessage m;
+      receiver.getNextMessage(m);
+      if (m.getAddress() == "/fftData") {
       for (int i=0; i < 512; i++) {
         fft[i] = m.getArgAsFloat(i);
       }
-    } else if (m.getAddress() == "/writeString") {
+      } else if (m.getAddress() == "/writeString") {
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       // GL_SRC_ALPHA_SATURATE,GL_ONE     GL_SRC_ALPHA, GL_ONE
       ofFill();
@@ -171,15 +170,15 @@ void ofApp::update() {
       //ofTrueTypeFontSettings settings(fontpath, 12);
       ttf.drawString(m.getArgAsString(0), 0, 0);
       ofPopMatrix();
-    } else if (m.getAddress() == "/drawRect") {
+      } else if (m.getAddress() == "/drawRect") {
       ofSetColor(m.getArgAsInt32(4), m.getArgAsInt32(5), m.getArgAsInt32(6));
       ofDrawRectangle(m.getArgAsInt32(0), m.getArgAsInt32(1),
                       m.getArgAsInt32(2), m.getArgAsInt32(3));
-    } else if (m.getAddress() == "/typoParticleMode") {
-      drawMode = m.getArgAsInt32(0);
-      //bUpdateDrawMode = true;
+      } else if (m.getAddress() == "/typoParticleMode") {
+        drawMode = m.getArgAsInt32(0);
+        //bUpdateDrawMode = true;
+        }
       }
-    }
   if (soundSketch != soundSketchOld) {
     color = ofColor(0, 0, 0, 5);
     soundSketchOld = soundSketch;}
@@ -201,15 +200,7 @@ void ofApp::update() {
     line.addVertex(grandChildNode.getGlobalPosition());
     if (line.size() > 100) {
       line.getVertices().erase(line.getVertices().begin());}}
-  if (hideTypo) {
-    if (bUpdateDrawMode) {
-      updateDrawMode();
     }
-    if (bResetParticles) {
-      resetParticles();
-    }
-    for (int i = 0; i < particles.size(); i++) {
-      particles[i]->update();}}}
 void ofApp::draw() {
   if (fillBackground) {
     ofSetColor(color);
@@ -270,11 +261,6 @@ void ofApp::draw() {
                             255, 255, 255, 155, 1);
     }
     cam.end();}
-  if (hideTypo) {
-    ofSetColor(255);
-    for (int i = 0; i < particles.size(); i++) {
-      particles[i]->display();
-    }}
   if (mirrorMode) {
     textureScreen.loadScreenData(0, 0, ofGetWidth(), ofGetHeight());
     glPushMatrix();
@@ -283,44 +269,6 @@ void ofApp::draw() {
     glRotatef(180, 0, 1.0f, 0);
     textureScreen.draw(0, 0, ofGetWidth(), ofGetHeight());
     glPopMatrix();}}
-void ofApp::updateDrawMode() {
-  cout << drawMode <<endl;
-  //drawMode = ++drawMode % 4;
-  if (drawMode == 2) {
-    ofSetColor(255);
-    //fbo.draw(0, 0);
-  }
-  bResetParticles = true;
-  bUpdateDrawMode = false;
-  }
-void ofApp::resetParticles() {
-  // clear existing particles
-  for (int i = 0; i < particles.size(); i++) {
-    delete particles[i];
-    particles[i] = NULL;
-  }
-  particles.clear();
-  // create new particles
-  if (particles.size() < maxParticles) {
-    int difference = maxParticles - particles.size();
-    for (int i = 0; i < difference; i++) {
-      Particle * p = new Particle();
-      p->setup(&pix, fbo_color, drawMode);
-      particles.push_back(p);
-    }
-  }
-  bResetParticles = false;}
-void ofApp::keyPressed(int key) { }
-void ofApp::keyReleased(int key) { }
-void ofApp::mouseMoved(int x, int y ) { }
-void ofApp::mouseDragged(int x, int y, int button) { }
-void ofApp::mousePressed(int x, int y, int button) { }
-void ofApp::mouseReleased(int x, int y, int button) { }
-void ofApp::mouseEntered(int x, int y) { }
-void ofApp::mouseExited(int x, int y) { }
-void ofApp::windowResized(int w, int h) { }
-void ofApp::gotMessage(ofMessage msg) { }
-void ofApp::dragEvent(ofDragInfo dragInfo) { }
 // Usefull code
   // if (ofGetFrameNum() % 60 == 0)
   // float sinOfTime2              = sin( ofGetElapsedTimef() + PI);
