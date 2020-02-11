@@ -10,9 +10,9 @@ class ofApp : public ofBaseApp{
   void setup();
   void draw();
 
-  ofParameter<bool> letterTask2, letterTask, imageTask, mirrorMode, onsetOn, sendOnsets,
-    fftView, startFFT, sendAmpFreq, hideMouse, autoSketch, soundSketch,
-    hideTypo;
+  ofParameter<bool> letterTask2, letterTask, imageTask, mirrorMode, onsetOn,
+    sendOnsets, fftView, startFFT, sendAmpFreq, hideMouse, autoSketch,
+    soundSketch, hideTypo, particleView;
   ofParameter<float> elasticityMin, elasticityMax, dampingMin, dampingMax,
     xSoundSketchMin, xSoundSketchMax, ySoundSketchMin, ySoundSketchMax;
 

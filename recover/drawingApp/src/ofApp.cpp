@@ -1,7 +1,7 @@
 // Copyright 2019 Aris Bezas
 #include "ofApp.h"
 void ofApp::setup() {
-  // Global Definition
+  //- Global Definition
     ofBackground(0, 0, 0);
     ofSetWindowPosition(0, 0);
     ofEnableSmoothing();
@@ -14,7 +14,7 @@ void ofApp::setup() {
     ofSetFrameRate(60);
     ofSetBackgroundAuto(false);
     // ofEnableDepthTest();
-  // Typography
+  //- Typography
     //string fontpath = "arial.ttf";
     ofTrueTypeFontSettings settings("times.ttf", 220);
     settings.antialiased = true;
@@ -40,7 +40,7 @@ void ofApp::setup() {
     fbo.end();
 
     fbo.readToPixels(pix);  //  the ofPixels class
-  // OSC communication
+  //- OSC communication
     receiver.setup(PORT);
     ofxSubscribeOsc(9005, "/fftView", fftView);
     ofxSubscribeOsc(9005, "/mirrorMode", mirrorMode);
@@ -97,16 +97,16 @@ void ofApp::setup() {
                       }
                     });
     */
-  // FFT
+  //- FFT
     fftTexture.allocate(ofGetScreenWidth(), ofGetScreenHeight(), GL_RGB);
     fft = new float[512];
     for (int i = 0; i < 512; ++i) {
       fft[i] = 0;
     }
     bands = 512;
-  // Mirror Effects
+  //- Mirror Effects
     textureScreen.allocate(ofGetScreenWidth(), ofGetScreenHeight(), GL_RGB);
-  // Start Values
+  //- Start Values
     xSoundSketchMin = 0; xSoundSketchMax = 1;
     ySoundSketchMin = 40; ySoundSketchMax = 800;
     fillBackground = true;
@@ -118,15 +118,15 @@ void ofApp::setup() {
     autoSketch = false;
     hideTypo = false;
     particleView = true;
-    color = ofColor(255, 255, 255, 145);
+    color = ofColor(0, 0, 0, 40);
     ofBackground(255);
-  // Auto Sketch
+  //- Auto Sketch
     baseNode.setPosition(0, 0, 0);
     childNode.setParent(baseNode);
     childNode.setPosition(0, 0, 200);
     grandChildNode.setParent(childNode);
     grandChildNode.setPosition(0, 50, 0);
-  // Particles
+  //- Particles
     // this number describes how many bins are used
     // on my machine, 2 is the ideal number (2^2 = 4x4 pixel bins)
     // if this number is too high, binning is not effective
@@ -138,7 +138,7 @@ void ofApp::setup() {
     particleSystem.setup(ofGetWidth(), ofGetHeight(), binPower);
     kParticles = 2;  // change that to 5 for MacBook Pro
     float padding = 0;
-    float maxVelocity = .5;
+    float maxVelocity = .95;
     for (int i = 0; i < kParticles * 1024; i++) {
       float x = ofRandom(padding, ofGetWidth() - padding);
       float y = ofRandom(padding, ofGetHeight() - padding);
@@ -150,20 +150,20 @@ void ofApp::setup() {
     rConColor = gConColor = bConColor = 255;
     rDotColor = gDotColor = bDotColor = 255;
     timeStep = 1;
-    lineOpacity = 0;
+    lineOpacity = 1;
     pointOpacity = 255;
     isMousePressed = false;
     slowMotion = false;
-    particleNeighborhood = 15;
-    particleRepulsion = 1;
+    particleNeighborhood = 25;
+    particleRepulsion = 3;
     centerAttraction = .01;
     forceRadius = 100;
     forceScale = 10;
     bounceXstart = 0;
     bounceYstart = 0;
-    bounceXend = ofGetWidth();
-    bounceYend = ofGetHeight();
-  // Load Images
+    bounceXend = ofGetScreenWidth();
+    bounceYend = ofGetScreenHeight();
+  //- Load Images
     string imageDir = "/home/aris/Pictures/lyon/";
     for (int i = 0; i < 61; i++) {
       string number;
@@ -179,7 +179,7 @@ void ofApp::setup() {
     }
     }
 void ofApp::update() {
-  // OSC responders
+  //- OSC responders
     for (int i = 0; i < NUM_MSG_STRINGS; i++) {
       if (timers[i] < ofGetElapsedTimef()) {
         msgStrings[i] = "";
@@ -188,133 +188,212 @@ void ofApp::update() {
       ofxOscMessage m;
       receiver.getNextMessage(m);
       if (m.getAddress() == "/fftData") {
-      for (int i=0; i < 512; i++) {
-        fft[i] = m.getArgAsFloat(i);
-      }
+        for (int i=0; i < 512; i++) {
+          fft[i] = m.getArgAsFloat(i);
+        }
       } else if (m.getAddress() == "/writeString") {
-      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      // GL_SRC_ALPHA_SATURATE,GL_ONE     GL_SRC_ALPHA, GL_ONE
-      ofFill();
-      ofSetColor(m.getArgAsInt32(3), m.getArgAsInt32(4),
-                 m.getArgAsInt32(5), m.getArgAsInt32(6));
-      ofPushMatrix();
-      ofTranslate(m.getArgAsInt32(1), m.getArgAsInt32(2), 0);
-      ttf.drawString(m.getArgAsString(0), 0, 0);
-      ofPopMatrix();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        // GL_SRC_ALPHA_SATURATE,GL_ONE     GL_SRC_ALPHA, GL_ONE
+        ofFill();
+        ofSetColor(m.getArgAsInt32(3), m.getArgAsInt32(4),
+                   m.getArgAsInt32(5), m.getArgAsInt32(6));
+        ofPushMatrix();
+        ofTranslate(m.getArgAsInt32(1), m.getArgAsInt32(2), 0);
+        ttf.drawString(m.getArgAsString(0), 0, 0);
+        ofPopMatrix();
       } else if (m.getAddress() == "/drawRect") {
-      ofSetColor(m.getArgAsInt32(4), m.getArgAsInt32(5), m.getArgAsInt32(6));
-      ofDrawRectangle(m.getArgAsInt32(0), m.getArgAsInt32(1),
+        ofSetColor(m.getArgAsInt32(4), m.getArgAsInt32(5), m.getArgAsInt32(6));
+        ofDrawRectangle(m.getArgAsInt32(0), m.getArgAsInt32(1),
                       m.getArgAsInt32(2), m.getArgAsInt32(3));
+      } else if ( m.getAddress() == "/particle" ) {
+        if (m.getArgAsString(0) == "activate") {
+          if (m.getArgAsInt32(1) == 1) { viewParticles = true;
+          } else if (m.getArgAsInt32(1) == 0) { viewParticles = false;
+          }
+        } else if (m.getArgAsString(0) == "lineOpacity") {
+          lineOpacity = m.getArgAsInt32(1);
+        } else if (m.getArgAsString(0) == "particleNeighborhood") {
+          particleNeighborhood = m.getArgAsInt32(1);
+        } else if (m.getArgAsString(0) == "forceRadius") {
+          forceRadius = m.getArgAsInt32(1);
+        } else if (m.getArgAsString(0) == "forceScale") {
+          forceScale = m.getArgAsInt32(1);
+        } else if (m.getArgAsString(0) == "pushParticles") {
+          if (m.getArgAsInt32(1) == 1) {
+            pushParticles = true;
+          } else if (m.getArgAsInt32(1) == 0) {
+            pushParticles = false;
+          }
+        } else if (m.getArgAsString(0) == "push") {
+          pushX = m.getArgAsFloat(1);
+          pushY = m.getArgAsFloat(2);
+        } else if (m.getArgAsString(0) == "add") {
+          Particle particle(m.getArgAsInt32(1),
+                            m.getArgAsInt32(2),
+                            m.getArgAsFloat(3),
+                            m.getArgAsFloat(4));
+          particleSystem.add(particle);
+        } else if (m.getArgAsString(0) == "dotColor") {
+          switch (m.getNumArgs()) {
+            case 2:
+              aDotColor = m.getArgAsInt32(1);
+              cout << aDotColor;
+              break;
+            case 4:
+              rDotColor = m.getArgAsInt32(1);
+              gDotColor = m.getArgAsInt32(2);
+              bDotColor = m.getArgAsInt32(3);
+            break;
+            case 5:
+              rDotColor = m.getArgAsInt32(1);
+              gDotColor = m.getArgAsInt32(2);
+              bDotColor =  m.getArgAsInt32(3);
+              aDotColor = m.getArgAsInt32(4);
+              break;
+          }
+        } else if (m.getArgAsString(0) == "conColor") {
+          switch (m.getNumArgs()) {
+            case 2:
+              aConColor = m.getArgAsInt32(1);
+              break;
+            case 4:
+              rConColor = m.getArgAsInt32(1);
+              gConColor = m.getArgAsInt32(2);
+              bConColor = m.getArgAsInt32(3);
+              break;
+            case 5:
+              rConColor = m.getArgAsInt32(1);
+              gConColor = m.getArgAsInt32(2);
+              bConColor = m.getArgAsInt32(3);
+              aConColor = m.getArgAsInt32(4);
+              break;
+          }
+        } else if  (m.getArgAsString(0) == "bounce") {
+          bounceXstart = m.getArgAsInt32(1);
+          bounceYstart = m.getArgAsInt32(2);
+          bounceXend = m.getArgAsInt32(3);
+          bounceYend = m.getArgAsInt32(4);
+        }
       }
     }
-  if (soundSketch != soundSketchOld) {
-    color = ofColor(0, 0, 0, 5);
-    soundSketchOld = soundSketch;}
-  if (soundSketch) {
-    for (int i = 0; i < 100; i++) {
-      sketch[i].init(1, ofRandom(elasticityMin, elasticityMax),
-                     ofRandom(dampingMin, dampingMax));}}
-  if (autoSketch != autoSketchOld) {
-    color = ofColor(0, 0, 0, 5);
-    autoSketchOld = autoSketch;}
-  if (autoSketch) {
-    for (int i = 100; i < 200; i++) {
-      sketch[i].init(1, ofRandom(elasticityMin, elasticityMax),
-                     ofRandom(dampingMin, dampingMax));
-    }
-
-    baseNode.pan(1);
-    childNode.tilt(5);
-    line.addVertex(grandChildNode.getGlobalPosition());
-    if (line.size() > 100) {
-      line.getVertices().erase(line.getVertices().begin());}}
-    }
+  //- SoundSketch
+    if (soundSketch != soundSketchOld) {
+      color = ofColor(0, 0, 0, 5);
+      soundSketchOld = soundSketch;}
+    if (soundSketch) {
+      for (int i = 0; i < 100; i++) {
+        sketch[i].init(1, ofRandom(elasticityMin, elasticityMax),
+                       ofRandom(dampingMin, dampingMax));}}
+  //- AutoSketch
+    if (autoSketch != autoSketchOld) {
+      color = ofColor(0, 0, 0, 5);
+      autoSketchOld = autoSketch;}
+    if (autoSketch) {
+      for (int i = 100; i < 200; i++) {
+        sketch[i].init(1, ofRandom(elasticityMin, elasticityMax),
+                       ofRandom(dampingMin, dampingMax));
+      }
+      baseNode.pan(1);
+      childNode.tilt(5);
+      line.addVertex(grandChildNode.getGlobalPosition());
+      if (line.size() > 100) {
+        line.getVertices().erase(line.getVertices().begin());}}
+  //- THE END
+      }
 void ofApp::draw() {
-  if (fillBackground) {
-    ofSetColor(color);
-    ofFill();
-    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());}
-  if (fftView) {
-    for (int i=0; i < 512; i++) {
-      glColor3f(255*fft[i], 255*fft[i], 255*fft[i]);
-      ofEllipse(ofGetWidth()/2, 512-i, 2, 2);
-    }
-    fftTexture.loadScreenData(0, 0, ofGetWidth()/2, ofGetHeight()/2);
-    ofSetColor(255, 255, 255, 255);
-    fftTexture.draw(-1, 0, ofGetWidth()/2, ofGetHeight()/2);
-    fftTexture.loadScreenData(0, 0, ofGetWidth()/2, ofGetHeight()/2);
-
-    glPushMatrix();
-    ofSetHexColor(0xffffff);
-    glTranslatef(ofGetWidth(), 0, 0);
-    glRotatef(180, 0, 1.0f, 0);
-    fftTexture.draw(0, 0,
-                    ofGetWidth()/2, ofGetHeight()/2);
-    glPopMatrix();
-
-    fftTexture.loadScreenData(0, 0, ofGetWidth(), ofGetHeight()/2);
-
-    glPushMatrix();
-    glTranslatef(0, ofGetHeight(), 0);
-    glRotatef(180, 1.0f, 0, 0);
-    fftTexture.draw(0, 0,
-                    ofGetWidth(), ofGetHeight()/2);
-    glPopMatrix();}
-  if (fftPolyline) {
-    ofSetColor(255, 255, 255, 255);
-    ofTranslate(256, 150);
-    for (int i = 0; i < bands; i+=16) {
-      ofPolyline polyline;
-      for (int j = 0; j < bands; ++j) {
-        polyline.addVertex(j, i-fft[j] * 1000.0);
+  //- fillBackgroumd
+    if (fillBackground) {
+      ofSetColor(color);
+      ofFill();
+      ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());}
+  //- fft
+    if (fftView) {
+      for (int i=0; i < 512; i++) {
+        glColor3f(255*fft[i], 255*fft[i], 255*fft[i]);
+        ofEllipse(ofGetWidth()/2, 512-i, 2, 2);
       }
-      polyline.draw();
-    }}
-  if (soundSketch) {
-    for (int i=0; i < 100; i++) {
-      sketch[i].drawMouse3D(
-          ofMap(xSoundSketch, xSoundSketchMin, xSoundSketchMax,
-                0, ofGetWidth(), true),
-          ofGetHeight() - ofMap(ySoundSketch, ySoundSketchMin, ySoundSketchMax,
-                0, ofGetHeight(), true), 0,
-          255, 255, 255, 155, 1);
+      fftTexture.loadScreenData(0, 0, ofGetWidth()/2, ofGetHeight()/2);
+      ofSetColor(255, 255, 255, 255);
+      fftTexture.draw(-1, 0, ofGetWidth()/2, ofGetHeight()/2);
+      fftTexture.loadScreenData(0, 0, ofGetWidth()/2, ofGetHeight()/2);
+      glPushMatrix();
+      ofSetHexColor(0xffffff);
+      glTranslatef(ofGetWidth(), 0, 0);
+      glRotatef(180, 0, 1.0f, 0);
+      fftTexture.draw(0, 0,
+                      ofGetWidth()/2, ofGetHeight()/2);
+      glPopMatrix();
+
+      fftTexture.loadScreenData(0, 0, ofGetWidth(), ofGetHeight()/2);
+      glPushMatrix();
+      glTranslatef(0, ofGetHeight(), 0);
+      glRotatef(180, 1.0f, 0, 0);
+      fftTexture.draw(0, 0,
+                      ofGetWidth(), ofGetHeight()/2);
+      glPopMatrix();}
+  //- fft polyline
+    if (fftPolyline) {
+      ofSetColor(255, 255, 255, 255);
+      ofTranslate(256, 150);
+      for (int i = 0; i < bands; i+=16) {
+        ofPolyline polyline;
+        for (int j = 0; j < bands; ++j) {
+          polyline.addVertex(j, i-fft[j] * 1000.0);
+        }
+        polyline.draw();
+      }}
+  //- SoundSketch
+    if (soundSketch) {
+      for (int i=0; i < 100; i++) {
+        sketch[i].drawMouse3D(
+            ofMap(xSoundSketch, xSoundSketchMin, xSoundSketchMax,
+                  0, ofGetWidth(), true),
+            ofGetHeight() - ofMap(ySoundSketch, ySoundSketchMin, ySoundSketchMax,
+                                  0, ofGetHeight(), true), 0,
+            255, 255, 255, 155, 1);
+      }
     }
+  //- AutoSketch
+    if (autoSketch) {
+      cam.begin();
+      for (int i=100; i < 200; i++) {
+        sketch[i].drawMouse3D(grandChildNode.getGlobalPosition().x,
+                              grandChildNode.getGlobalPosition().y,
+                              grandChildNode.getGlobalPosition().z,
+                              255, 255, 255, 155, 1);
+      }
+      cam.end();}
+  //- Particles
+    if (particleView) {
+      particleSystem.setTimeStep(timeStep);
+      ofSetColor(rConColor, gConColor, bConColor, aConColor);
+      particleSystem.setupForces();
+      glBegin(GL_LINES);
+      for (int i = 0; i < particleSystem.size(); i++) {
+        Particle& cur = particleSystem[i];
+        particleSystem.addRepulsionForce(
+            cur, particleNeighborhood, particleRepulsion);
+        cur.bounceOffWalls(bounceXstart, bounceYstart, bounceXend, bounceYend);
+        //cur.bounceOffWalls((20*ofGetFrameNum())%1500, bounceYstart, bounceXend, bounceYend);
+        cur.addDampingForce();
+      }
+      glEnd();
+      particleSystem.update();
+      ofSetColor(255,255,255,255);
+      particleSystem.draw();
     }
-  if (autoSketch) {
-    cam.begin();
-    for (int i=100; i < 200; i++) {
-      sketch[i].drawMouse3D(grandChildNode.getGlobalPosition().x,
-                            grandChildNode.getGlobalPosition().y,
-                            grandChildNode.getGlobalPosition().z,
-                            255, 255, 255, 155, 1);
+  //- MirrowMode
+    if (mirrorMode) {
+      textureScreen.loadScreenData(0, 0, ofGetWidth(), ofGetHeight());
+      glPushMatrix();
+      ofSetHexColor(0xffffff);
+      glTranslatef(ofGetWidth(), 0, 0);
+      glRotatef(180, 0, 1.0f, 0);
+      textureScreen.draw(0, 0, ofGetWidth(), ofGetHeight());
+      glPopMatrix();}
+  //- THE END
     }
-    cam.end();}
-  if (particleView) {
-    particleSystem.setTimeStep(timeStep);
-    ofSetColor(rConColor, gConColor, bConColor, aConColor);	
-    particleSystem.setupForces();
-    glBegin(GL_LINES);
-    for(int i = 0; i < particleSystem.size(); i++) {
-      Particle& cur = particleSystem[i];
-      particleSystem.addRepulsionForce(cur, particleNeighborhood, particleRepulsion);
-      //cur.bounceOffWalls(0, 0, ofGetWidth(), ofGetHeight());				
-      cur.bounceOffWalls(bounceXstart, bounceYstart, bounceXend, bounceYend);				
-      cur.addDampingForce();
-    }
-    glEnd();
-    particleSystem.update();
-    ofSetColor(255,255,255,255);
-    particleSystem.draw();
-    }
-  if (mirrorMode) {
-    textureScreen.loadScreenData(0, 0, ofGetWidth(), ofGetHeight());
-    glPushMatrix();
-    ofSetHexColor(0xffffff);
-    glTranslatef(ofGetWidth(), 0, 0);
-    glRotatef(180, 0, 1.0f, 0);
-    textureScreen.draw(0, 0, ofGetWidth(), ofGetHeight());
-    glPopMatrix();}}
-// Usefull code
+//- Usefull code
   // if (ofGetFrameNum() % 60 == 0)
   // float sinOfTime2              = sin( ofGetElapsedTimef() + PI);
   // float sinOfTimeMapped2        = ofMap(sinOfTime2, -1, 1, 0, 255);

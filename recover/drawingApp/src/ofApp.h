@@ -1,4 +1,4 @@
-//  Copyright 2019 and initial definition
+//-  Copyright 2019 and initial definition
   #pragma once
 
   #include "ofMain.h"
@@ -11,29 +11,29 @@
   #define NUM_MSG_STRINGS 20
 class ofApp : public ofBaseApp{
  public:
-  // the voids
+  //- the voids
     void setup();
     void update();
     void draw();
-  // OSC
+  //- OSC
     ofxOscReceiver receiver;
     int currentMsgString;
     string msgStrings[NUM_MSG_STRINGS];
     float timers[NUM_MSG_STRINGS];
-  // FFT
+  //- FFT
     float *fft;
     int bands;
-  // Booleans
+  //- Booleans
     bool fillBackground, autoSketch, autoSketchOld,
       hideTypo, hideTypoOld, fftView, fftPolyline;
     bool cutMotion, mirrorMode, onsetOn;
     bool soundSketch, soundSketchOld;
-  // Soundsketch
+  //- Soundsketch
     float xSoundSketch, ySoundSketch;
-  // Textures
+  //- Textures
     ofTexture  fftTexture;
     ofTexture textureScreen;
-  // sketch
+  //- sketch
     ofSketch sketch[2048];
     float elasticityMin;
     float elasticityMax;
@@ -45,15 +45,15 @@ class ofApp : public ofBaseApp{
     ofNode grandChildNode;
     ofPolyline line;
     ofEasyCam cam;
-  // typography
+  //- typography
     ofFbo fbo;
     ofPixels pix;
     ofTrueTypeFont ttf;
-  // Colors
+  //- Colors
     ofColor bg_color;
     ofColor fbo_color;
     ofColor color;
-  // Particles
+  //- Particles
     ParticleSystem particleSystem;
 
     int rConColor, gConColor, bConColor, aConColor,
@@ -66,6 +66,6 @@ class ofApp : public ofBaseApp{
     float particleNeighborhood, particleRepulsion;
     float centerAttraction;
     int kParticles, forceScale, forceRadius;
-  // Images
+  //- Images
     ofImage image[200];
 };
