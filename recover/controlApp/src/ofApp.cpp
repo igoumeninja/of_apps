@@ -48,6 +48,7 @@ void ofApp::setup() {
     ofxPublishOsc("localhost", 46100, "/startFFT", startFFT);
     ofxPublishOsc("localhost", 9005, "/fftView", fftView);
   //- Particles
+    ofxPublishOsc("localhost", 9005, "/particleView", particleView);
   //- Mirror Mode
     ofxPublishOsc("localhost", 9005, "/mirrorMode", mirrorMode);
   //- Typography

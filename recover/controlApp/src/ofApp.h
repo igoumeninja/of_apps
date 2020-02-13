@@ -1,26 +1,23 @@
-// Copyright
-#pragma once
+//- Copyright and #include
+  #pragma once
 
-#include "ofMain.h"
-#include "ofxOscPublisher.h"
-#include "ofxGui.h"
-
+  #include "ofMain.h"
+  #include "ofxOscPublisher.h"
+  #include "ofxGui.h"
 class ofApp : public ofBaseApp{
  public:
   void setup();
   void draw();
-
-  ofParameter<bool> letterTask2, letterTask, imageTask, mirrorMode, onsetOn,
-    sendOnsets, fftView, startFFT, sendAmpFreq, hideMouse, autoSketch,
-    soundSketch, hideTypo, particleView;
-  ofParameter<float> elasticityMin, elasticityMax, dampingMin, dampingMax,
-    xSoundSketchMin, xSoundSketchMax, ySoundSketchMin, ySoundSketchMax;
-
-  ofParameter<int> typoParticleMode;
-  ofParameter<ofColor> color;
-
+  //- Booleans
+    ofParameter<bool> letterTask2, letterTask, imageTask, mirrorMode, onsetOn,
+      sendOnsets, fftView, startFFT, sendAmpFreq, hideMouse, autoSketch,
+      soundSketch, hideTypo, particleView;
+  //- Floats
+    ofParameter<float> elasticityMin, elasticityMax, dampingMin, dampingMax,
+      xSoundSketchMin, xSoundSketchMax, ySoundSketchMin, ySoundSketchMax;
+  //- Integers
+    ofParameter<int> typoParticleMode;
+  //- Colors
+    ofParameter<ofColor> color;
   ofxPanel gui;
-
- private:
-  ofPoint p;
 };

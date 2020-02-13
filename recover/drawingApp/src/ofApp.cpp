@@ -16,7 +16,7 @@ void ofApp::setup() {
     // ofEnableDepthTest();
   //- Typography
     //string fontpath = "arial.ttf";
-    ofTrueTypeFontSettings settings("times.ttf", 220);
+    ofTrueTypeFontSettings settings("times.ttf", 14);
     settings.antialiased = true;
     settings.addRanges(ofAlphabet::Greek);
 
@@ -42,6 +42,7 @@ void ofApp::setup() {
     fbo.readToPixels(pix);  //  the ofPixels class
   //- OSC communication
     receiver.setup(PORT);
+    ofxSubscribeOsc(9005, "/particleView", particleView);
     ofxSubscribeOsc(9005, "/fftView", fftView);
     ofxSubscribeOsc(9005, "/mirrorMode", mirrorMode);
     ofxSubscribeOsc(9005, "/soundSketch", soundSketch);
@@ -117,7 +118,7 @@ void ofApp::setup() {
     soundSketch = false;
     autoSketch = false;
     hideTypo = false;
-    particleView = true;
+    particleView = false;
     color = ofColor(0, 0, 0, 40);
     ofBackground(255);
   //- Auto Sketch
